@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Colaborador - EL LOBO</title>
+
+    <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+
+    <main class="admin-container">
+
+        <section class="login-admin" id="area-login-admin">
+
+            <form class="form-admin" id="form-login-admin">
+
+                <h1>Área do Colaborador</h1>
+
+                <input type="email" id="admin-email" placeholder="Email" required>
+                <input type="password" id="admin-senha" placeholder="Senha" required>
+
+                <button type="submit">Entrar</button>
+
+                <a href="./index.html">Voltar para o site</a>
+
+            </form>
+
+        </section>
+
+        <section class="painel-admin escondido" id="painel-admin">
+
+            <header class="admin-header">
+                <h1>Painel EL LOBO</h1>
+                <button id="btn-sair">Sair</button>
+            </header>
+
+            <div class="admin-cards">
+
+                <div class="admin-card">
+                    <h2>Serviços</h2>
+                    <p>Gerencie os serviços da barbearia.</p>
+                    <button id="btn-gerenciar-servicos">Gerenciar Serviços</button>
+                </div>
+
+                <div class="admin-card">
+                    <h2>Horários</h2>
+                    <p>Configure dias e horários de trabalho.</p>
+                    <button id="btn-gerenciar-horarios">Gerenciar Horários</button>
+                </div>
+
+                <div class="admin-card">
+                    <h2>Bloqueios</h2>
+                    <p>Bloqueie dias ou horários específicos.</p>
+                    <button id="btn-gerenciar-bloqueios">
+                        Gerenciar Bloqueios
+                    </button>
+                </div>
+
+                <div class="admin-card">
+                    <h2>Agendamentos</h2>
+                    <p>Veja os agendamentos dos clientes.</p>
+                    <button id="btn-ver-agendamentos">
+                        Ver Agendamentos
+                    </button>
+                </div>
+
+            </div>
+
+            <section class="secao-admin escondido" id="secao-servicos">
+
+                <h2>Gerenciar Serviços</h2>
+
+                <form class="form-servico" id="form-servico">
+
+                    <input type="text" id="servico-nome" placeholder="Nome do serviço" required>
+                    <input type="number" id="servico-preco" placeholder="Preço" required>
+                    <input type="number" id="servico-duracao" placeholder="Duração em minutos" required>
+
+                    <button type="submit">
+                        Cadastrar Serviço
+                    </button>
+
+                </form>
+
+                <div class="lista-servicos" id="lista-servicos"></div>
+
+            </section>
+
+            <section class="secao-admin escondido" id="secao-horarios">
+
+                <h2>Gerenciar Horários</h2>
+
+                <p class="descricao-secao">
+                    Configure os dias de trabalho, horário de início, horário de encerramento e intervalo entre atendimentos.
+                </p>
+
+                <div class="lista-horarios" id="lista-horarios"></div>
+
+            </section>
+
+            <section class="secao-admin escondido" id="secao-bloqueios">
+
+                <h2>Gerenciar Bloqueios</h2>
+            
+                <p class="descricao-secao">
+                    Bloqueie um dia inteiro ou apenas um horário específico.
+                </p>
+            
+                <form class="form-bloqueio" id="form-bloqueio">
+            
+                    <input type="date" id="bloqueio-data" required>
+            
+                    <input type="time" id="bloqueio-horario">
+            
+                    <select id="bloqueio-dia-inteiro">
+                        <option value="false">Bloquear horário específico</option>
+                        <option value="true">Bloquear dia inteiro</option>
+                    </select>
+            
+                    <input type="text" id="bloqueio-motivo" placeholder="Motivo do bloqueio">
+            
+                    <button type="submit">
+                        Cadastrar Bloqueio
+                    </button>
+            
+                </form>
+            
+                <div class="lista-bloqueios" id="lista-bloqueios"></div>
+            
+            </section>
+
+            <section class="secao-admin escondido" id="secao-agendamentos">
+
+                <h2>Agendamentos</h2>
+            
+                <p class="descricao-secao">
+                    Veja todos os agendamentos realizados pelos clientes.
+                </p>
+            
+                <div class="lista-agendamentos" id="lista-agendamentos"></div>
+            
+            </section>
+
+        </section>
+
+    </main>
+
+    <script src="./js/admin.js"></script>
+</body>
+</html>

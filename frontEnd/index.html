@@ -9,81 +9,283 @@
 </head>
 <body>
 
+    <!-- HEADER -->
+
     <header>
-        <div class="logo">EL LOBO 💈🐺</div>
+
+        <div class="logo">
+            EL LOBO 💈🐺
+        </div>
 
         <nav>
+            
             <a href="#">Início</a>
             <a href="#servicos">Serviços</a>
-            <a href="#">Sobre</a>
-            <a href="#">Contato</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#contato">Contato</a>
+            <a href="./admin.html" class="btn-admin">Área do Colaborador</a>
+            
         </nav>
+
     </header>
 
+    <!-- HERO -->
+
     <section class="hero">
+
         <div class="hero-text">
-            <h1>Seu estilo começa aqui.</h1>
-            <p>Cortes modernos, barba e experiência premium.</p>
+
+            <h1>
+                Seu estilo começa aqui.
+            </h1>
+
+            <p>
+                Cortes modernos, barba e experiência premium.
+            </p>
 
             <button id="btn-agendar">
                 Agendar horário
             </button>
+
         </div>
+
     </section>
+
+    <!-- SOBRE -->
+
+    <section class="sobre" id="sobre">
+
+        <div class="sobre-texto">
+
+            <h2>
+                Sobre a EL LOBO
+            </h2>
+
+            <p>
+                Desde moleque eu já aprontava com máquina na mão. Cortava meu próprio cabelo, testava estilos, errava, aprendia e descobria ali uma paixão que ia muito além da estética. Em 2016, transformei essa paixão em profissão e nasceu a barbearia.
+
+Localizada na periferia, a barbearia carrega a essência da quebrada: humildade, respeito e verdade. Mas quem entra percebe que aqui o padrão é outro. O ambiente é moderno, confortável e pensado nos mínimos detalhes para fazer qualquer cliente se sentir em casa — ou melhor, se sentir importante.
+
+Mais do que corte de cabelo, aqui entregamos experiência, autoestima e identidade. Cada cliente senta na cadeira sabendo que vai sair renovado. Porque pra nós, estilo não depende de CEP.
+
+Da periferia, com visão de gigante.
+
+            </p>
+
+            <p>
+                Trabalhamos com cortes modernos, barba, acabamento, penteados
+                e cuidados masculinos, sempre focando na qualidade e no
+                conforto de cada cliente.
+            </p>
+
+            <p>
+                Nosso ambiente possui uma identidade urbana, moderna e
+                acolhedora, trazendo a essência da cultura old school,
+                lifestyle e autenticidade masculina.
+            </p>
+
+            <div class="info-barbearia">
+
+                <!-- LOCALIZAÇÃO -->
+            
+                <div class="info-card">
+            
+                    <h3>
+                        📍 Localização
+                    </h3>
+            
+                    <p>
+                        Rua Professora Renilde de Almeida, 02
+                    </p>
+            
+                    <p>
+                        Parque Imperial - Barueri/SP
+                    </p>
+            
+                </div>
+            
+                <!-- ATENDIMENTO -->
+            
+                <div class="info-card destaque-atendimento">
+            
+                    <h3>
+                        🕒 Horário de Atendimento
+                    </h3>
+            
+                    <p>
+                        Consulte os horários e dias disponíveis
+                        diretamente no sistema de agendamento.
+                    </p>
+            
+                    <span>
+                        Atendimento de Segunda à Sábado
+                    </span>
+            
+                </div>
+            
+            </div>
+
+    </section>
+
+    <!-- LOGIN / CADASTRO -->
 
     <section class="login-container" id="area-login">
 
+        <!-- CADASTRO -->
+
         <form class="form-login" id="form-cadastro">
-            <h2>Criar Conta</h2>
 
-            <input type="text" id="cadastro-nome" placeholder="Nome completo" required>
-            <input type="email" id="cadastro-email" placeholder="Email" required>
-            <input type="password" id="cadastro-senha" placeholder="Senha" required>
+            <h2>
+                Criar Conta
+            </h2>
 
-            <button type="submit">Criar conta</button>
+            <input 
+                type="text" 
+                id="cadastro-nome" 
+                placeholder="Nome completo"
+                required
+            >
+
+            <input 
+                type="email" 
+                id="cadastro-email" 
+                placeholder="Email"
+                required
+            >
+
+            <input 
+                type="password" 
+                id="cadastro-senha" 
+                placeholder="Senha"
+                required
+            >
+
+            <button type="submit">
+                Criar conta
+            </button>
+
+            <button type="button" class="btn-voltar">
+                Voltar
+            </button>
 
             <p>
                 Já tem conta?
-                <span id="mostrar-login">Fazer login</span>
+                <span id="mostrar-login">
+                    Fazer login
+                </span>
             </p>
+
         </form>
 
+        <!-- LOGIN -->
+
         <form class="form-login escondido" id="form-login">
-            <h2>Entrar</h2>
 
-            <input type="email" id="login-email" placeholder="Email" required>
-            <input type="password" id="login-senha" placeholder="Senha" required>
+            <h2>
+                Entrar
+            </h2>
 
-            <button type="submit">Entrar</button>
+            <input 
+                type="email" 
+                id="login-email" 
+                placeholder="Email"
+                required
+            >
+
+            <input 
+                type="password" 
+                id="login-senha" 
+                placeholder="Senha"
+                required
+            >
+
+            <button type="submit">
+                Entrar
+            </button>
+
+            <button type="button" class="btn-voltar">
+                Voltar
+            </button>
 
             <p>
                 Não tem conta?
-                <span id="mostrar-cadastro">Criar conta</span>
+                <span id="mostrar-cadastro">
+                    Criar conta
+                </span>
             </p>
+
         </form>
 
     </section>
+
+    <!-- AGENDAMENTO -->
 
     <section class="formulario-container" id="formulario">
 
         <form class="form-agendamento" id="form-agendamento">
-            <h2>Agendar Horário</h2>
 
-            <input type="text" id="nome" placeholder="Digite seu nome" required>
-            <input type="email" id="email" placeholder="Digite seu email" required>
-            <input type="tel" id="telefone" placeholder="Digite seu telefone" required>
+            <h2>
+                Agendar Horário
+            </h2>
+
+            <!-- SERVIÇO -->
+
+            <label>
+                Serviço
+            </label>
+
+            <select id="servico" required>
+
+                <option value="">
+                    Selecione um serviço
+                </option>
+
+            </select>
+
+            <!-- DATA -->
+
+            <label>
+                Data
+            </label>
+
+            <input 
+                type="date" 
+                id="data"
+                required
+            >
+
+            <!-- HORÁRIO -->
+
+            <label>
+                Horários disponíveis
+            </label>
+
+            <select id="horario" required>
+
+                <option value="">
+                    Escolha uma data primeiro
+                </option>
+
+            </select>
 
             <button type="submit">
                 Confirmar Agendamento
             </button>
+
         </form>
 
     </section>
 
+    <!-- SERVIÇOS -->
+
     <section class="servicos" id="servicos">
-        <h2>Nossos Serviços</h2>
+
+        <h2>
+            Nossos Serviços
+        </h2>
 
         <div class="cards">
+
             <div class="card">
                 <h3>Corte Masculino</h3>
                 <p>Cortes modernos e clássicos.</p>
@@ -98,13 +300,59 @@
                 <h3>Sobrancelha</h3>
                 <p>Design masculino personalizado.</p>
             </div>
+
+            <div class="card">
+                <h3>Barba no Vapor</h3>
+                <p>Relaxamento e hidratação completa.</p>
+            </div>
+
         </div>
+
     </section>
 
+    <!-- FOOTER -->
+
     <footer>
-        <p>© 2026 Barbearia EL LOBO</p>
+
+        <p>
+            © 2016 Barbearia EL LOBO
+        </p>
+
+        <section class="contato" id="contato">
+
+            <div class="contato-container">
+        
+                <h2>
+                    Contato 💈
+                </h2>
+        
+                <div class="contato-card">
+        
+                    <h3>
+                        Diego de Pádua
+                    </h3>
+        
+                    <p>
+                        Proprietário da EL LOBO Barbershop
+                    </p>
+        
+                    <a 
+                        href="https://instagram.com/ellobobarbershop"
+                        target="_blank"
+                        class="instagram-btn"
+                    >
+                        @ellobobarbershop
+                    </a>
+        
+                </div>
+        
+            </div>
+        
+        </section>
+
     </footer>
 
     <script src="./js/app.js"></script>
+
 </body>
 </html>

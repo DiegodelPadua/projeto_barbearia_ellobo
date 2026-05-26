@@ -1,42 +1,39 @@
 const fs = require('fs')
 const path = require('path')
 
-const caminhoArquivo = path.join(__dirname, '../database/clientes.json')
+const caminhoArquivo = path.join(__dirname, '../database/agendamentos.json')
 
-const selectClientes = async function () {
+const selectAgendamentos = async function () {
     const dados = fs.readFileSync(caminhoArquivo, 'utf-8')
     return JSON.parse(dados)
 }
 
-const insertCliente = async function (cliente) {
+const insertAgendamento = async function (agendamento) {
     try {
-        const clientes = await selectClientes()
+        const agendamentos = await selectAgendamentos()
 
-        clientes.push(cliente)
+        agendamentos.push(agendamento)
 
-        fs.writeFileSync(
-            caminhoArquivo,
-            JSON.stringify(clientes, null, 4)
-        )
+        fs.writeFileSync(caminhoArquivo, JSON.stringify(agendamentos, null, 4))
 
         return true
 
     } catch (error) {
-        console.log('ERRO NO DAO insertCliente:', error)
+        console.log('ERRO NO DAO insertAgendamento:', error)
         return false
     }
 }
 
-const buscarClientePorEmail = async function (email) {
-    const clientes = await selectClientes()
+const buscarAgendamentoPorDataHorario = async function (data, horario) {
+    const agendamentos = await selectAgendamentos()
 
-    return clientes.find(function (cliente) {
-        return cliente.email === email
+    return agendamentos.find(function (agendamento) {
+        return agendamento.data === data && agendamento.horario === horario
     })
 }
 
 module.exports = {
-    selectClientes,
-    insertCliente,
-    buscarClientePorEmail
+    selectAgendamentos,
+    insertAgendamento,
+    buscarAgendamentoPorDataHorario
 }

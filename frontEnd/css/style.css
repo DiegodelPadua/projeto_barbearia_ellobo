@@ -29,9 +29,10 @@ header{
     color: #d4af37;
 }
 
-nav{
+header nav{
     display: flex;
-    gap: 20px;
+    align-items: center;
+    gap: 25px;
 }
 
 nav a{
@@ -259,4 +260,231 @@ footer{
 
 .escondido{
     display: none;
+}
+.form-agendamento label{
+    color: #d4af37;
+    font-weight: bold;
+}
+
+.form-agendamento select,
+.form-agendamento input{
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 16px;
+}
+.btn-voltar{
+    background-color: transparent;
+    border: 1px solid #d4af37;
+    color: #d4af37;
+}
+
+.btn-voltar:hover{
+    background-color: #d4af37;
+    color: black;
+}
+/* SOBRE */
+
+.sobre{
+    padding: 100px 8%;
+    background-color: #0d0d0d;
+
+    display: flex;
+    justify-content: center;
+}
+
+.sobre-texto{
+    max-width: 900px;
+}
+
+.sobre-texto h2{
+    font-size: 50px;
+    color: #d4af37;
+
+    margin-bottom: 30px;
+}
+
+.sobre-texto p{
+    font-size: 20px;
+    line-height: 35px;
+
+    margin-bottom: 20px;
+
+    color: #ddd;
+}
+
+.localizacao{
+    margin-top: 40px;
+
+    padding: 30px;
+
+    border: 1px solid #d4af37;
+    border-radius: 20px;
+
+    background-color: #111;
+}
+
+.localizacao h3{
+    color: #d4af37;
+    margin-bottom: 15px;
+}
+/* INFORMAÇÕES BARBEARIA */
+
+.info-barbearia{
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+
+    margin-top: 50px;
+}
+
+.info-card{
+    flex: 1;
+    min-width: 280px;
+
+    background-color: #111;
+
+    border: 1px solid #d4af37;
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    transition: 0.3s;
+}
+
+.info-card:hover{
+    transform: translateY(-5px);
+}
+
+.info-card h3{
+    color: #d4af37;
+
+    margin-bottom: 20px;
+
+    font-size: 28px;
+}
+
+.info-card p{
+    color: #ddd;
+
+    line-height: 30px;
+}
+
+.destaque-atendimento{
+    background: linear-gradient(
+        135deg,
+        #1a1a1a,
+        #111
+    );
+}
+
+.destaque-atendimento span{
+    display: inline-block;
+
+    margin-top: 20px;
+
+    background-color: #d4af37;
+
+    color: black;
+
+    padding: 10px 20px;
+
+    border-radius: 30px;
+
+    font-weight: bold;
+}
+/* CONTATO */
+
+.contato{
+    padding: 100px 8%;
+    background-color: #111;
+}
+
+.contato-container{
+    max-width: 900px;
+    margin: auto;
+}
+
+.contato-container h2{
+    text-align: center;
+
+    font-size: 50px;
+
+    color: #d4af37;
+
+    margin-bottom: 50px;
+}
+
+.contato-card{
+    background-color: #0d0d0d;
+
+    border: 1px solid #d4af37;
+
+    border-radius: 20px;
+
+    padding: 50px;
+
+    text-align: center;
+}
+
+.contato-card h3{
+    font-size: 35px;
+
+    color: white;
+
+    margin-bottom: 15px;
+}
+
+.contato-card p{
+    color: #ccc;
+
+    margin-bottom: 30px;
+
+    font-size: 18px;
+}
+
+.instagram-btn{
+    display: inline-block;
+
+    padding: 15px 30px;
+
+    background-color: #d4af37;
+
+    color: black;
+
+    text-decoration: none;
+
+    border-radius: 50px;
+
+    font-weight: bold;
+
+    transition: 0.3s;
+}
+
+.instagram-btn:hover{
+    transform: scale(1.05);
+}
+.btn-admin{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 45px;
+
+    padding: 0 20px;
+
+    color: #d4af37;
+
+    border: 1px solid #d4af37;
+
+    border-radius: 30px;
+
+    transition: 0.3s;
+}
+
+.btn-admin:hover{
+    background-color: #d4af37;
+    color: black;
 }
