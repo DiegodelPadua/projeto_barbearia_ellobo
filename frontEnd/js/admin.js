@@ -25,11 +25,16 @@ document.addEventListener('DOMContentLoaded', function(){
     const secaoAgendamentos = document.getElementById('secao-agendamentos')
     const listaAgendamentos = document.getElementById('lista-agendamentos')
 
+    const btnBuscarAgendamentos = document.getElementById('btn-buscar-agendamentos')
+    const inputDataAgendamentoAdmin = document.getElementById('data-agendamento-admin')
+    const tabelaAgendamentos = document.getElementById('tabela-agendamentos')
+
     const API_COLABORADORES = 'http://localhost:8080/colaboradores'
     const API_SERVICOS = 'http://localhost:8080/servicos'
     const API_HORARIOS = 'http://localhost:8080/horarios'
     const API_BLOQUEIOS = 'http://localhost:8080/bloqueios'
     const API_AGENDAMENTOS = 'http://localhost:8080/agendamentos'
+    
 
     let colaboradorLogado = JSON.parse(localStorage.getItem('colaboradorLogado'))
 
@@ -481,47 +486,98 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     btnVerAgendamentos.addEventListener('click', function(){
         secaoAgendamentos.classList.toggle('escondido')
-        carregarAgendamentosAdmin()
     })
     
-    async function carregarAgendamentosAdmin(){
+    btnBuscarAgendamentos.addEventListener('click', async function(){
+        const data = inputDataAgendamentoAdmin.value
+    
+        if (!data) {
+            alert('Escolha uma data para consultar.')
+            return
+        }
+    
+        await carregarTabelaAgendamentos(data)
+    })
+    
+    async function carregarTabelaAgendamentos(data){
         try {
-            const resposta = await fetch(API_AGENDAMENTOS)
-            const dados = await resposta.json()
+            const respostaHorarios = await fetch(`${API_HORARIOS}/disponiveis?data=${data}`)
+            const dadosHorarios = await respostaHorarios.json()
     
-            listaAgendamentos.innerHTML = ''
+            const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+            const dadosAgendamentos = await respostaAgendamentos.json()
     
-            if (dados.agendamentos.length === 0) {
-                listaAgendamentos.innerHTML = '<p class="descricao-secao">Nenhum agendamento encontrado.</p>'
+            const agendamentosDoDia = dadosAgendamentos.agendamentos.filter(function(agendamento){
+                return agendamento.data === data
+            })
+    
+            const horariosDisponiveis = dadosHorarios.horariosDisponiveis
+    
+            const horariosOcupados = agendamentosDoDia.map(function(agendamento){
+                return agendamento.horario
+            })
+    
+            const todosHorarios = [
+                ...horariosDisponiveis,
+                ...horariosOcupados
+            ].sort()
+    
+            tabelaAgendamentos.innerHTML = ''
+    
+            if (todosHorarios.length === 0) {
+                tabelaAgendamentos.innerHTML = '<p class="descricao-secao">Nenhum horário encontrado para esta data.</p>'
                 return
             }
     
-            dados.agendamentos.forEach(function(agendamento){
+            todosHorarios.forEach(function(horario){
     
-                const item = document.createElement('div')
-                item.classList.add('item-agendamento')
+                const agendamentoEncontrado = agendamentosDoDia.find(function(agendamento){
+                    return agendamento.horario === horario
+                })
     
-                item.innerHTML = `
-                    <div>
-                        <strong>${agendamento.cliente.nome}</strong>
-                        <span>Email: ${agendamento.cliente.email}</span>
-                        <span>Serviço: ${agendamento.servico.nome}</span>
-                        <span>Data: ${agendamento.data}</span>
-                        <span>Horário: ${agendamento.horario}</span>
-                    </div>
+                const linha = document.createElement('div')
+                linha.classList.add('linha-agendamento')
     
-                    <span class="status-confirmado">
-                        ${agendamento.statusAgendamento}
-                    </span>
-                `
+                if (agendamentoEncontrado) {
+                    linha.innerHTML = `
+                        <strong>${horario}</strong>
     
-                listaAgendamentos.appendChild(item)
+                        <span class="status-ocupado">
+                            Ocupado
+                        </span>
+    
+                        <span>
+                            Cliente: ${agendamentoEncontrado.cliente.nome}
+                        </span>
+    
+                        <span>
+                            Serviço: ${agendamentoEncontrado.servico.nome}
+                        </span>
+                    `
+                } else {
+                    linha.innerHTML = `
+                        <strong>${horario}</strong>
+    
+                        <span class="status-livre">
+                            Disponível
+                        </span>
+    
+                        <span>
+                            Cliente: -
+                        </span>
+    
+                        <span>
+                            Serviço: -
+                        </span>
+                    `
+                }
+    
+                tabelaAgendamentos.appendChild(linha)
             })
     
         } catch (error) {
-            alert('Erro ao carregar agendamentos.')
+            alert('Erro ao carregar tabela de horários.')
             console.log(error)
         }
     }
-
 })

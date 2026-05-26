@@ -322,3 +322,62 @@ button:hover{
     border-radius: 30px;
     font-weight: bold;
 }
+.filtro-agendamento{
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filtro-agendamento input{
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 16px;
+}
+
+.tabela-agendamentos{
+    display: grid;
+    gap: 12px;
+}
+
+.linha-agendamento{
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 18px;
+
+    display: grid;
+    grid-template-columns: 120px 140px 1fr 1fr;
+    gap: 15px;
+    align-items: center;
+}
+
+.linha-agendamento strong{
+    color: #d4af37;
+}
+
+.status-livre{
+    background-color: #1f6f3f;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.status-ocupado{
+    background-color: #7a1f1f;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+@media(max-width: 800px){
+    .linha-agendamento{
+        grid-template-columns: 1fr;
+    }
+}

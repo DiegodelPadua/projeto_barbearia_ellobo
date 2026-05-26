@@ -135,10 +135,18 @@
                 <h2>Agendamentos</h2>
             
                 <p class="descricao-secao">
-                    Veja todos os agendamentos realizados pelos clientes.
+                    Veja os horários disponíveis e preenchidos de uma data específica.
                 </p>
             
-                <div class="lista-agendamentos" id="lista-agendamentos"></div>
+                <div class="filtro-agendamento">
+                    <input type="date" id="data-agendamento-admin">
+            
+                    <button id="btn-buscar-agendamentos" type="button">
+                        Buscar Horários
+                    </button>
+                </div>
+            
+                <div class="tabela-agendamentos" id="tabela-agendamentos"></div>
             
             </section>
 
