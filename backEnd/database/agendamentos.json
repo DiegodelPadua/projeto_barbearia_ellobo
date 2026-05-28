@@ -1,20 +1,20 @@
 [
     {
-        "id": 1779796856122,
+        "id": 1779976279405,
         "cliente": {
-            "id": 1779796341849,
-            "nome": "Diego",
-            "email": "diego@email.com"
+            "id": 1779971652734,
+            "nome": "May",
+            "email": "may@gmail.com"
         },
         "servico": {
-            "id": 1,
-            "nome": "Corte Masculino",
-            "preco": 50,
-            "duracao": 30
+            "id": 3,
+            "nome": "Barba no Vapor",
+            "preco": 60,
+            "duracao": 40
         },
-        "data": "2026-06-01",
-        "horario": "09:00",
+        "data": "2026-05-29",
+        "horario": "14:30",
         "statusAgendamento": "confirmado",
-        "dataCadastro": "26/05/2026, 09:00:56"
+        "dataCadastro": "28/05/2026, 10:51:19"
     }
 ]

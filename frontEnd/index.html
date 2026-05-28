@@ -9,8 +9,6 @@
 </head>
 <body>
 
-    <!-- HEADER -->
-
     <header>
 
         <div class="logo">
@@ -18,18 +16,25 @@
         </div>
 
         <nav>
-            
             <a href="#">Início</a>
             <a href="#servicos">Serviços</a>
             <a href="#sobre">Sobre</a>
             <a href="#contato">Contato</a>
-            <a href="./admin.html" class="btn-admin">Área do Colaborador</a>
-            
+
+            <a href="./admin.html" class="btn-admin" id="link-admin">
+                Área do Colaborador
+            </a>
         </nav>
 
-    </header>
+        <div class="usuario-logado escondido" id="usuario-logado">
+            <span id="nome-usuario"></span>
 
-    <!-- HERO -->
+            <button id="btn-sair-cliente">
+                Sair
+            </button>
+        </div>
+
+    </header>
 
     <section class="hero">
 
@@ -51,87 +56,7 @@
 
     </section>
 
-    <!-- SOBRE -->
-
-    <section class="sobre" id="sobre">
-
-        <div class="sobre-texto">
-
-            <h2>
-                Sobre a EL LOBO
-            </h2>
-
-            <p>
-                Desde moleque eu já aprontava com máquina na mão. Cortava meu próprio cabelo, testava estilos, errava, aprendia e descobria ali uma paixão que ia muito além da estética. Em 2016, transformei essa paixão em profissão e nasceu a barbearia.
-
-Localizada na periferia, a barbearia carrega a essência da quebrada: humildade, respeito e verdade. Mas quem entra percebe que aqui o padrão é outro. O ambiente é moderno, confortável e pensado nos mínimos detalhes para fazer qualquer cliente se sentir em casa — ou melhor, se sentir importante.
-
-Mais do que corte de cabelo, aqui entregamos experiência, autoestima e identidade. Cada cliente senta na cadeira sabendo que vai sair renovado. Porque pra nós, estilo não depende de CEP.
-
-Da periferia, com visão de gigante.
-
-            </p>
-
-            <p>
-                Trabalhamos com cortes modernos, barba, acabamento, penteados
-                e cuidados masculinos, sempre focando na qualidade e no
-                conforto de cada cliente.
-            </p>
-
-            <p>
-                Nosso ambiente possui uma identidade urbana, moderna e
-                acolhedora, trazendo a essência da cultura old school,
-                lifestyle e autenticidade masculina.
-            </p>
-
-            <div class="info-barbearia">
-
-                <!-- LOCALIZAÇÃO -->
-            
-                <div class="info-card">
-            
-                    <h3>
-                        📍 Localização
-                    </h3>
-            
-                    <p>
-                        Rua Professora Renilde de Almeida, 02
-                    </p>
-            
-                    <p>
-                        Parque Imperial - Barueri/SP
-                    </p>
-            
-                </div>
-            
-                <!-- ATENDIMENTO -->
-            
-                <div class="info-card destaque-atendimento">
-            
-                    <h3>
-                        🕒 Horário de Atendimento
-                    </h3>
-            
-                    <p>
-                        Consulte os horários e dias disponíveis
-                        diretamente no sistema de agendamento.
-                    </p>
-            
-                    <span>
-                        Atendimento de Segunda à Sábado
-                    </span>
-            
-                </div>
-            
-            </div>
-
-    </section>
-
-    <!-- LOGIN / CADASTRO -->
-
     <section class="login-container" id="area-login">
-
-        <!-- CADASTRO -->
 
         <form class="form-login" id="form-cadastro">
 
@@ -139,33 +64,12 @@ Da periferia, com visão de gigante.
                 Criar Conta
             </h2>
 
-            <input 
-                type="text" 
-                id="cadastro-nome" 
-                placeholder="Nome completo"
-                required
-            >
-
-            <input 
-                type="email" 
-                id="cadastro-email" 
-                placeholder="Email"
-                required
-            >
-
-            <input 
-                type="password" 
-                id="cadastro-senha" 
-                placeholder="Senha"
-                required
-            >
+            <input type="text" id="cadastro-nome" placeholder="Nome completo" required>
+            <input type="email" id="cadastro-email" placeholder="Email" required>
+            <input type="password" id="cadastro-senha" placeholder="Senha" required>
 
             <button type="submit">
                 Criar conta
-            </button>
-
-            <button type="button" class="btn-voltar">
-                Voltar
             </button>
 
             <p>
@@ -177,34 +81,17 @@ Da periferia, com visão de gigante.
 
         </form>
 
-        <!-- LOGIN -->
-
         <form class="form-login escondido" id="form-login">
 
             <h2>
                 Entrar
             </h2>
 
-            <input 
-                type="email" 
-                id="login-email" 
-                placeholder="Email"
-                required
-            >
-
-            <input 
-                type="password" 
-                id="login-senha" 
-                placeholder="Senha"
-                required
-            >
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-senha" placeholder="Senha" required>
 
             <button type="submit">
                 Entrar
-            </button>
-
-            <button type="button" class="btn-voltar">
-                Voltar
             </button>
 
             <p>
@@ -218,8 +105,6 @@ Da periferia, com visão de gigante.
 
     </section>
 
-    <!-- AGENDAMENTO -->
-
     <section class="formulario-container" id="formulario">
 
         <form class="form-agendamento" id="form-agendamento">
@@ -228,44 +113,18 @@ Da periferia, com visão de gigante.
                 Agendar Horário
             </h2>
 
-            <!-- SERVIÇO -->
-
-            <label>
-                Serviço
-            </label>
-
             <select id="servico" required>
-
                 <option value="">
                     Selecione um serviço
                 </option>
-
             </select>
 
-            <!-- DATA -->
-
-            <label>
-                Data
-            </label>
-
-            <input 
-                type="date" 
-                id="data"
-                required
-            >
-
-            <!-- HORÁRIO -->
-
-            <label>
-                Horários disponíveis
-            </label>
+            <input type="date" id="data" required>
 
             <select id="horario" required>
-
                 <option value="">
                     Escolha uma data primeiro
                 </option>
-
             </select>
 
             <button type="submit">
@@ -276,7 +135,53 @@ Da periferia, com visão de gigante.
 
     </section>
 
-    <!-- SERVIÇOS -->
+    <section class="meus-agendamentos-container" id="meus-agendamentos">
+
+        <h2>
+            Meus Agendamentos
+        </h2>
+
+        <div class="lista-meus-agendamentos" id="lista-meus-agendamentos"></div>
+
+    </section>
+
+    <section class="reagendar-container" id="area-reagendar">
+
+        <form class="form-reagendar" id="form-reagendar">
+
+            <h2>
+                Reagendar Horário
+            </h2>
+
+            <input type="hidden" id="id-agendamento-reagendar">
+
+            <label>
+                Nova data
+            </label>
+
+            <input type="date" id="nova-data" required>
+
+            <label>
+                Novo horário
+            </label>
+
+            <select id="novo-horario" required>
+                <option value="">
+                    Escolha uma nova data primeiro
+                </option>
+            </select>
+
+            <button type="submit">
+                Confirmar Reagendamento
+            </button>
+
+            <button type="button" id="btn-cancelar-reagendamento">
+                Fechar
+            </button>
+
+        </form>
+
+    </section>
 
     <section class="servicos" id="servicos">
 
@@ -297,59 +202,144 @@ Da periferia, com visão de gigante.
             </div>
 
             <div class="card">
+                <h3>Barba no Vapor</h3>
+                <p>Experiência premium com toalha quente.</p>
+            </div>
+
+            <div class="card">
                 <h3>Sobrancelha</h3>
                 <p>Design masculino personalizado.</p>
             </div>
 
             <div class="card">
-                <h3>Barba no Vapor</h3>
-                <p>Relaxamento e hidratação completa.</p>
+                <h3>Luzes</h3>
+                <p>Visual moderno e estiloso.</p>
+            </div>
+
+            <div class="card">
+                <h3>Pezinho</h3>
+                <p>Acabamento e alinhamento.</p>
+            </div>
+
+            <div class="card">
+                <h3>Limpeza Facial</h3>
+                <p>Cuidados especiais para sua pele.</p>
+            </div>
+
+            <div class="card">
+                <h3>Corte com Penteado</h3>
+                <p>Visual completo para ocasiões especiais.</p>
             </div>
 
         </div>
 
     </section>
 
-    <!-- FOOTER -->
+    <section class="sobre" id="sobre">
+
+        <div class="sobre-container">
+
+            <h2>
+                Sobre a EL LOBO
+            </h2>
+
+            <p>
+                A EL LOBO nasceu da paixão por estilo,
+                autoestima e cultura urbana.
+            </p>
+
+            <p>
+                Desde pequeno, Diego de Pádua já gostava
+                de cortar cabelo e transformar o visual
+                das pessoas.
+            </p>
+
+            <p>
+                Fundada oficialmente em 2016, a barbearia
+                cresceu dentro da periferia com uma proposta
+                diferente: unir atendimento de qualidade,
+                ambiente moderno e experiência premium.
+            </p>
+
+            <p>
+                Hoje, a EL LOBO representa mais do que uma
+                barbearia. Representa identidade, respeito,
+                cultura e evolução.
+            </p>
+
+            <div class="info-barbearia">
+
+                <div class="info-card">
+
+                    <h3>
+                        📍 Localização
+                    </h3>
+
+                    <p>
+                        Rua Professora Renilde de Almeida, 02
+                    </p>
+
+                    <p>
+                        Parque Imperial - Barueri/SP
+                    </p>
+
+                </div>
+
+                <div class="info-card destaque-atendimento">
+
+                    <h3>
+                        🕒 Horário de Atendimento
+                    </h3>
+
+                    <p>
+                        Consulte os horários e dias disponíveis
+                        diretamente no sistema de agendamento.
+                    </p>
+
+                    <span>
+                        Confira os horários disponíveis e garanta seu atendimento.
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="contato" id="contato">
+
+        <div class="contato-container">
+
+            <h2>
+                Contato 💈
+            </h2>
+
+            <div class="contato-card">
+
+                <h3>
+                    Diego de Pádua
+                </h3>
+
+                <p>
+                    Proprietário da EL LOBO Barbershop
+                </p>
+
+                <a href="https://instagram.com/ellobobarbershop" target="_blank" class="instagram-btn">
+                    @ellobobarbershop
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
 
     <footer>
-
         <p>
             © 2016 Barbearia EL LOBO
         </p>
-
-        <section class="contato" id="contato">
-
-            <div class="contato-container">
-        
-                <h2>
-                    Contato 💈
-                </h2>
-        
-                <div class="contato-card">
-        
-                    <h3>
-                        Diego de Pádua
-                    </h3>
-        
-                    <p>
-                        Proprietário da EL LOBO Barbershop
-                    </p>
-        
-                    <a 
-                        href="https://instagram.com/ellobobarbershop"
-                        target="_blank"
-                        class="instagram-btn"
-                    >
-                        @ellobobarbershop
-                    </a>
-        
-                </div>
-        
-            </div>
-        
-        </section>
-
     </footer>
 
     <script src="./js/app.js"></script>

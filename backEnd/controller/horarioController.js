@@ -119,7 +119,9 @@ const listarHorariosDisponiveis = async function (request, response) {
         })
 
         const agendado = agendamentos.find(function (agendamento) {
-            return agendamento.data === data && agendamento.horario === horario
+            return agendamento.data === data && 
+                   agendamento.horario === horario &&
+                   agendamento.statusAgendamento !== 'cancelado'
         })
 
         return !bloqueado && !agendado

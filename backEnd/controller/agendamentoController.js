@@ -13,10 +13,10 @@ const listarAgendamentos = async function (request, response) {
     })
 }
 
-const criarAgendamento = async function (request, response) {
+const criarAgendamento = async function(request, response){
     const { idCliente, idServico, data, horario } = request.body
 
-    if (!idCliente || !idServico || !data || !horario) {
+    if(!idCliente || !idServico || !data || !horario){
         return response.status(400).json({
             status: false,
             message: 'Cliente, serviço, data e horário são obrigatórios.'
@@ -24,11 +24,12 @@ const criarAgendamento = async function (request, response) {
     }
 
     const clientes = await clienteDAO.selectClientes()
-    const cliente = clientes.find(function (cliente) {
+
+    const cliente = clientes.find(function(cliente){
         return cliente.id == idCliente
     })
 
-    if (!cliente) {
+    if(!cliente){
         return response.status(404).json({
             status: false,
             message: 'Cliente não encontrado.'
@@ -36,37 +37,21 @@ const criarAgendamento = async function (request, response) {
     }
 
     const servicos = await servicoDAO.selectServicos()
-    const servico = servicos.find(function (servico) {
+
+    const servico = servicos.find(function(servico){
         return servico.id == idServico
     })
 
-    if (!servico) {
+    if(!servico){
         return response.status(404).json({
             status: false,
             message: 'Serviço não encontrado.'
         })
     }
 
-    const bloqueios = await bloqueioDAO.selectBloqueios()
-
-    const horarioBloqueado = bloqueios.find(function (bloqueio) {
-        return bloqueio.data === data &&
-        (
-            bloqueio.diaInteiro === true ||
-            bloqueio.horario === horario
-        )
-    })
-
-    if (horarioBloqueado) {
-        return response.status(409).json({
-            status: false,
-            message: 'Este horário está bloqueado.'
-        })
-    }
-
     const agendamentoExiste = await agendamentoDAO.buscarAgendamentoPorDataHorario(data, horario)
 
-    if (agendamentoExiste) {
+    if(agendamentoExiste && agendamentoExiste.statusAgendamento !== 'cancelado'){
         return response.status(409).json({
             status: false,
             message: 'Este horário já possui agendamento.'
@@ -75,26 +60,29 @@ const criarAgendamento = async function (request, response) {
 
     const novoAgendamento = {
         id: Date.now(),
+
         cliente: {
             id: cliente.id,
             nome: cliente.nome,
             email: cliente.email
         },
+
         servico: {
             id: servico.id,
             nome: servico.nome,
             preco: servico.preco,
             duracao: servico.duracao
         },
-        data,
-        horario,
+
+        data: data,
+        horario: horario,
         statusAgendamento: 'confirmado',
         dataCadastro: new Date().toLocaleString('pt-BR')
     }
 
     const resultado = await agendamentoDAO.insertAgendamento(novoAgendamento)
 
-    if (resultado) {
+    if(resultado){
         return response.status(201).json({
             status: true,
             message: 'Agendamento criado com sucesso.',
@@ -108,7 +96,62 @@ const criarAgendamento = async function (request, response) {
     })
 }
 
+const cancelarAgendamento = async function(request, response){
+    const id = request.params.id
+
+    const resultado = await agendamentoDAO.cancelarAgendamento(id)
+
+    if(resultado){
+        return response.status(200).json({
+            status: true,
+            message: 'Agendamento cancelado com sucesso.'
+        })
+    }
+
+    return response.status(404).json({
+        status: false,
+        message: 'Agendamento não encontrado.'
+    })
+}
+
+const reagendarAgendamento = async function(request, response){
+    const id = request.params.id
+    const { data, horario } = request.body
+
+    if(!data || !horario){
+        return response.status(400).json({
+            status: false,
+            message: 'Nova data e novo horário são obrigatórios.'
+        })
+    }
+
+    const agendamentoExiste = await agendamentoDAO.buscarAgendamentoPorDataHorario(data, horario)
+
+    if(agendamentoExiste && agendamentoExiste.statusAgendamento !== 'cancelado'){
+        return response.status(409).json({
+            status: false,
+            message: 'Este horário já possui agendamento.'
+        })
+    }
+
+    const resultado = await agendamentoDAO.reagendarAgendamento(id, data, horario)
+
+    if(resultado){
+        return response.status(200).json({
+            status: true,
+            message: 'Agendamento reagendado com sucesso.'
+        })
+    }
+
+    return response.status(404).json({
+        status: false,
+        message: 'Agendamento não encontrado.'
+    })
+}
+
 module.exports = {
     listarAgendamentos,
-    criarAgendamento
+    criarAgendamento,
+    cancelarAgendamento,
+    reagendarAgendamento 
 }

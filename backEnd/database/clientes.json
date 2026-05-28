@@ -5,5 +5,19 @@
         "email": "diego@email.com",
         "senha": "123456",
         "dataCadastro": "26/05/2026, 08:52:21"
+    },
+    {
+        "id": 1779888649653,
+        "nome": "diego",
+        "email": "diego.lemos@docente.senai.br",
+        "senha": "Rosalina10**",
+        "dataCadastro": "27/05/2026, 10:30:49"
+    },
+    {
+        "id": 1779971652734,
+        "nome": "May",
+        "email": "may@gmail.com",
+        "senha": "may123",
+        "dataCadastro": "28/05/2026, 09:34:12"
     }
 ]

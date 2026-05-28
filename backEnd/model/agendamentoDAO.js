@@ -32,8 +32,61 @@ const buscarAgendamentoPorDataHorario = async function (data, horario) {
     })
 }
 
+const cancelarAgendamento = async function(id){
+    try {
+        const agendamentos = await selectAgendamentos()
+
+        const index = agendamentos.findIndex(function(agendamento){
+            return agendamento.id == id
+        })
+
+        if(index === -1){
+            return false
+        }
+
+        agendamentos[index].statusAgendamento = 'cancelado'
+
+        fs.writeFileSync(caminhoArquivo, JSON.stringify(agendamentos, null, 4))
+
+        return true
+
+    } catch(error) {
+        console.log('ERRO NO DAO cancelarAgendamento:', error)
+        return false
+    }
+}
+
+const reagendarAgendamento = async function(id, novaData, novoHorario){
+    try {
+        const agendamentos = await selectAgendamentos()
+
+        const index = agendamentos.findIndex(function(agendamento){
+            return agendamento.id == id
+        })
+
+        if(index === -1){
+            return false
+        }
+
+        agendamentos[index].data = novaData
+        agendamentos[index].horario = novoHorario
+        agendamentos[index].statusAgendamento = 'confirmado'
+
+        fs.writeFileSync(caminhoArquivo, JSON.stringify(agendamentos, null, 4))
+
+        return true
+
+    } catch(error) {
+        console.log('ERRO NO DAO reagendarAgendamento:', error)
+        return false
+    }
+}
+
+
 module.exports = {
     selectAgendamentos,
     insertAgendamento,
-    buscarAgendamentoPorDataHorario
+    buscarAgendamentoPorDataHorario,
+    cancelarAgendamento,
+    reagendarAgendamento
 }

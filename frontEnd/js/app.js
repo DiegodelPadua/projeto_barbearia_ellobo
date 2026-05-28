@@ -1,7 +1,5 @@
 const botaoAgendar = document.getElementById('btn-agendar')
 
-const botoesVoltar = document.querySelectorAll('.btn-voltar')
-
 const areaLogin = document.getElementById('area-login')
 const formularioContainer = document.getElementById('formulario')
 
@@ -16,12 +14,30 @@ const selectServico = document.getElementById('servico')
 const inputData = document.getElementById('data')
 const selectHorario = document.getElementById('horario')
 
+const linkAdmin = document.getElementById('link-admin')
+const areaUsuarioLogado = document.getElementById('usuario-logado')
+const nomeUsuario = document.getElementById('nome-usuario')
+const btnSairCliente = document.getElementById('btn-sair-cliente')
+
+const areaMeusAgendamentos = document.getElementById('meus-agendamentos')
+const listaMeusAgendamentos = document.getElementById('lista-meus-agendamentos')
+
+const areaReagendar = document.getElementById('area-reagendar')
+const formReagendar = document.getElementById('form-reagendar')
+const inputIdAgendamentoReagendar = document.getElementById('id-agendamento-reagendar')
+const inputNovaData = document.getElementById('nova-data')
+const selectNovoHorario = document.getElementById('novo-horario')
+const btnCancelarReagendamento = document.getElementById('btn-cancelar-reagendamento')
+
+
 const API_CLIENTES = 'http://localhost:8080/clientes'
 const API_SERVICOS = 'http://localhost:8080/servicos'
 const API_HORARIOS = 'http://localhost:8080/horarios'
 const API_AGENDAMENTOS = 'http://localhost:8080/agendamentos'
 
 let clienteLogado = JSON.parse(localStorage.getItem('clienteLogado'))
+
+verificarClienteLogado()
 
 botaoAgendar.addEventListener('click', function () {
     if (clienteLogado) {
@@ -30,6 +46,18 @@ botaoAgendar.addEventListener('click', function () {
         abrirLogin()
     }
 })
+
+function verificarClienteLogado() {
+    if (clienteLogado) {
+        nomeUsuario.textContent = `Olá, ${clienteLogado.nome}`
+        areaUsuarioLogado.classList.remove('escondido')
+        linkAdmin.classList.add('escondido')
+        abrirAgendamento()
+    } else {
+        areaUsuarioLogado.classList.add('escondido')
+        linkAdmin.classList.remove('escondido')
+    }
+}
 
 function abrirLogin() {
     areaLogin.style.display = 'flex'
@@ -41,10 +69,14 @@ function abrirLogin() {
 }
 
 function abrirAgendamento() {
+
+    
     areaLogin.style.display = 'none'
     formularioContainer.style.display = 'flex'
+    areaMeusAgendamentos.style.display = 'block'
 
     carregarServicos()
+    carregarMeusAgendamentos()
 
     formularioContainer.scrollIntoView({
         behavior: 'smooth'
@@ -70,35 +102,24 @@ formCadastro.addEventListener('submit', async function (event) {
         senha: document.getElementById('cadastro-senha').value.trim()
     }
 
-    if (!cliente.nome || !cliente.email || !cliente.senha) {
-        alert('Preencha todos os campos.')
-        return
-    }
+    const resposta = await fetch(`${API_CLIENTES}/cadastro`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cliente)
+    })
 
-    try {
-        const resposta = await fetch(`${API_CLIENTES}/cadastro`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cliente)
-        })
+    const dados = await resposta.json()
 
-        const dados = await resposta.json()
+    if (resposta.ok) {
+        clienteLogado = dados.cliente
+        localStorage.setItem('clienteLogado', JSON.stringify(clienteLogado))
 
-        if (resposta.ok) {
-            clienteLogado = dados.cliente
-            localStorage.setItem('clienteLogado', JSON.stringify(clienteLogado))
-
-            alert('Conta criada com sucesso 💈')
-            abrirAgendamento()
-        } else {
-            alert(dados.message)
-        }
-
-    } catch (error) {
-        alert('Erro ao conectar com a API de clientes.')
-        console.log(error)
+        alert('Conta criada com sucesso 💈')
+        verificarClienteLogado()
+    } else {
+        alert(dados.message)
     }
 })
 
@@ -110,53 +131,41 @@ formLogin.addEventListener('submit', async function (event) {
         senha: document.getElementById('login-senha').value.trim()
     }
 
-    try {
-        const resposta = await fetch(`${API_CLIENTES}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(login)
-        })
+    const resposta = await fetch(`${API_CLIENTES}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(login)
+    })
 
-        const dados = await resposta.json()
+    const dados = await resposta.json()
 
-        if (resposta.ok) {
-            clienteLogado = dados.cliente
-            localStorage.setItem('clienteLogado', JSON.stringify(clienteLogado))
+    if (resposta.ok) {
+        clienteLogado = dados.cliente
+        localStorage.setItem('clienteLogado', JSON.stringify(clienteLogado))
 
-            alert(`Bem-vindo, ${clienteLogado.nome} 💈`)
-            abrirAgendamento()
-        } else {
-            alert(dados.message)
-        }
-
-    } catch (error) {
-        alert('Erro ao conectar com a API de login.')
-        console.log(error)
+        alert(`Bem-vindo, ${clienteLogado.nome} 💈`)
+        verificarClienteLogado()
+    } else {
+        alert(dados.message)
     }
 })
 
 async function carregarServicos() {
-    try {
-        const resposta = await fetch(API_SERVICOS)
-        const dados = await resposta.json()
+    const resposta = await fetch(API_SERVICOS)
+    const dados = await resposta.json()
 
-        selectServico.innerHTML = '<option value="">Selecione um serviço</option>'
+    selectServico.innerHTML = '<option value="">Selecione um serviço</option>'
 
-        dados.servicos.forEach(function (servico) {
-            const option = document.createElement('option')
+    dados.servicos.forEach(function (servico) {
+        const option = document.createElement('option')
 
-            option.value = servico.id
-            option.textContent = `${servico.nome} - R$ ${servico.preco}`
+        option.value = servico.id
+        option.textContent = `${servico.nome} - R$ ${servico.preco}`
 
-            selectServico.appendChild(option)
-        })
-
-    } catch (error) {
-        alert('Erro ao carregar serviços.')
-        console.log(error)
-    }
+        selectServico.appendChild(option)
+    })
 }
 
 inputData.addEventListener('change', async function () {
@@ -166,42 +175,30 @@ inputData.addEventListener('change', async function () {
         return
     }
 
-    try {
-        const resposta = await fetch(`${API_HORARIOS}/disponiveis?data=${dataSelecionada}`)
-        const dados = await resposta.json()
+    const resposta = await fetch(`${API_HORARIOS}/disponiveis?data=${dataSelecionada}`)
+    const dados = await resposta.json()
 
-        selectHorario.innerHTML = ''
+    selectHorario.innerHTML = ''
 
-        if (dados.horariosDisponiveis.length === 0) {
-            selectHorario.innerHTML = '<option value="">Nenhum horário disponível</option>'
-            return
-        }
-
-        selectHorario.innerHTML = '<option value="">Selecione um horário</option>'
-
-        dados.horariosDisponiveis.forEach(function (horario) {
-            const option = document.createElement('option')
-
-            option.value = horario
-            option.textContent = horario
-
-            selectHorario.appendChild(option)
-        })
-
-    } catch (error) {
-        alert('Erro ao carregar horários disponíveis.')
-        console.log(error)
+    if (dados.horariosDisponiveis.length === 0) {
+        selectHorario.innerHTML = '<option value="">Nenhum horário disponível</option>'
+        return
     }
+
+    selectHorario.innerHTML = '<option value="">Selecione um horário</option>'
+
+    dados.horariosDisponiveis.forEach(function (horario) {
+        const option = document.createElement('option')
+
+        option.value = horario
+        option.textContent = horario
+
+        selectHorario.appendChild(option)
+    })
 })
 
 formAgendamento.addEventListener('submit', async function (event) {
     event.preventDefault()
-
-    if (!clienteLogado) {
-        alert('Você precisa estar logado para agendar.')
-        abrirLogin()
-        return
-    }
 
     const agendamento = {
         idCliente: clienteLogado.id,
@@ -215,41 +212,232 @@ formAgendamento.addEventListener('submit', async function (event) {
         return
     }
 
+    const resposta = await fetch(API_AGENDAMENTOS, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(agendamento)
+    })
+
+    const dados = await resposta.json()
+
+    if (resposta.ok) {
+        alert('Agendamento confirmado com sucesso 💈')
+
+        formAgendamento.reset()
+        selectHorario.innerHTML = '<option value="">Escolha uma data primeiro</option>'
+    
+        carregarMeusAgendamentos()
+    
+    } else {
+        alert(dados.message)
+    }
+})
+
+async function carregarMeusAgendamentos(){
     try {
-        const resposta = await fetch(API_AGENDAMENTOS, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(agendamento)
+        const resposta = await fetch(API_AGENDAMENTOS)
+        const dados = await resposta.json()
+
+        listaMeusAgendamentos.innerHTML = ''
+
+        const meusAgendamentos = dados.agendamentos.filter(function(agendamento){
+            return agendamento.cliente && agendamento.cliente.id == clienteLogado.id
+        })
+
+        if(meusAgendamentos.length === 0){
+            listaMeusAgendamentos.innerHTML = '<p>Você ainda não possui agendamentos.</p>'
+            return
+        }
+
+        meusAgendamentos.forEach(function(agendamento){
+
+            const item = document.createElement('div')
+            item.classList.add('item-meu-agendamento')
+
+            const nomeServico = agendamento.servico?.nome || 'Serviço não informado'
+            const dataAgendamento = agendamento.data || 'Data não informada'
+            const horarioAgendamento = agendamento.horario || 'Horário não informado'
+            const statusAgendamento = agendamento.statusAgendamento || 'sem status'
+
+            item.innerHTML = `
+            <div>
+                <strong>${nomeServico}</strong>
+        
+                <p>Data: ${dataAgendamento}</p>
+        
+                <p>Horário: ${horarioAgendamento}</p>
+            </div>
+        
+            <div>
+        
+                <span class="status-agendamento">
+                    ${agendamento.statusAgendamento}
+                </span>
+        
+                ${
+                    agendamento.statusAgendamento !== 'cancelado'
+                    ? `
+                        <button onclick="cancelarMeuAgendamento(${agendamento.id})">
+                            Cancelar
+                        </button>
+        
+                        <button onclick="abrirReagendamento(${agendamento.id})">
+                            Reagendar
+                        </button>
+                    `
+                    : ''
+                }
+        
+            </div>
+        `
+
+            listaMeusAgendamentos.appendChild(item)
+        })
+
+    } catch(error){
+        console.log(error)
+        alert('Erro ao carregar seus agendamentos.')
+    }
+}
+
+btnSairCliente.addEventListener('click', function () {
+    localStorage.removeItem('clienteLogado')
+    clienteLogado = null
+    location.reload()
+})
+window.cancelarMeuAgendamento = async function(id){
+    const confirmar = confirm('Tem certeza que deseja cancelar este agendamento?')
+
+    if(!confirmar){
+        return
+    }
+
+    try {
+        const resposta = await fetch(`${API_AGENDAMENTOS}/${id}/cancelar`, {
+            method: 'PUT'
         })
 
         const dados = await resposta.json()
 
-        if (resposta.ok) {
-            alert('Agendamento confirmado com sucesso 💈')
-            formAgendamento.reset()
-            selectHorario.innerHTML = '<option value="">Escolha uma data primeiro</option>'
-        } else {
+        if(resposta.ok){
+            alert('Agendamento cancelado com sucesso.')
+            carregarMeusAgendamentos()
+
+            if(inputData.value){
+                inputData.dispatchEvent(new Event('change'))
+            }
+
+        }else{
             alert(dados.message)
         }
 
-    } catch (error) {
-        alert('Erro ao confirmar agendamento.')
+    } catch(error){
+        alert('Erro ao cancelar agendamento.')
         console.log(error)
     }
+}
+window.abrirReagendamento = function(id){
+    inputIdAgendamentoReagendar.value = id
+
+    areaReagendar.style.display = 'flex'
+
+    areaReagendar.scrollIntoView({
+        behavior: 'smooth'
+    })
+}
+
+btnCancelarReagendamento.addEventListener('click', function(){
+    areaReagendar.style.display = 'none'
+    formReagendar.reset()
+    selectNovoHorario.innerHTML = '<option value="">Escolha uma nova data primeiro</option>'
 })
-botoesVoltar.forEach(function(botao){
 
-    botao.addEventListener('click', function(){
+inputNovaData.addEventListener('change', async function(){
+    const dataSelecionada = inputNovaData.value
 
-        areaLogin.style.display = 'none'
+    if(!dataSelecionada){
+        return
+    }
 
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+    const resposta = await fetch(`${API_HORARIOS}/disponiveis?data=${dataSelecionada}`)
+    const dados = await resposta.json()
+
+    selectNovoHorario.innerHTML = ''
+
+    if(dados.horariosDisponiveis.length === 0){
+        selectNovoHorario.innerHTML = '<option value="">Nenhum horário disponível</option>'
+        return
+    }
+
+    selectNovoHorario.innerHTML = '<option value="">Selecione um horário</option>'
+
+    dados.horariosDisponiveis.forEach(function(horario){
+        const option = document.createElement('option')
+
+        option.value = horario
+        option.textContent = horario
+
+        selectNovoHorario.appendChild(option)
+    })
+})
+
+formReagendar.addEventListener('submit', async function(event){
+    event.preventDefault()
+
+    const idAgendamento = inputIdAgendamentoReagendar.value
+
+    const dadosReagendamento = {
+        data: inputNovaData.value,
+        horario: selectNovoHorario.value
+    }
+
+    if(!idAgendamento){
+        alert('Agendamento não encontrado para reagendar.')
+        return
+    }
+
+    if(!dadosReagendamento.data || !dadosReagendamento.horario){
+        alert('Escolha a nova data e o novo horário.')
+        return
+    }
+
+    try{
+        const resposta = await fetch(`${API_AGENDAMENTOS}/${idAgendamento}/reagendar`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosReagendamento)
         })
 
-    })
+        const dados = await resposta.json()
 
+        if(resposta.ok){
+            alert('Agendamento reagendado com sucesso.')
+
+            areaReagendar.style.display = 'none'
+            formReagendar.reset()
+
+            selectNovoHorario.innerHTML = `
+                <option value="">
+                    Escolha uma nova data primeiro
+                </option>
+            `
+
+            await carregarMeusAgendamentos()
+
+            if(inputData.value){
+                inputData.dispatchEvent(new Event('change'))
+            }
+
+        }else{
+            alert(dados.message)
+        }
+
+    }catch(error){
+        alert('Erro ao confirmar reagendamento.')
+        console.log(error)
+    }
 })

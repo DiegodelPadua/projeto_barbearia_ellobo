@@ -488,3 +488,254 @@ footer{
     background-color: #d4af37;
     color: black;
 }
+.usuario-logado{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    color: #d4af37;
+    font-weight: bold;
+}
+
+.usuario-logado button{
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.escondido{
+    display: none !important;
+}
+.meus-agendamentos-container{
+    display: none;
+    padding: 80px 8%;
+    background-color: #0d0d0d;
+}
+
+.meus-agendamentos-container h2{
+    text-align: center;
+    color: #d4af37;
+    font-size: 40px;
+    margin-bottom: 40px;
+}
+
+.lista-meus-agendamentos{
+    display: grid;
+    gap: 20px;
+}
+
+.item-meu-agendamento{
+    background: radial-gradient(circle at left, #1a1a1a, #050505);
+    border: 1px solid #d4af37;
+    border-radius: 16px;
+    padding: 28px;
+
+    display: grid;
+    grid-template-columns: 90px 1px 1fr 1px 1fr;
+    align-items: center;
+    gap: 28px;
+
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.12);
+}
+
+.item-meu-agendamento::before{
+    content: "✂";
+    width: 70px;
+    height: 70px;
+
+    border: 1px solid #d4af37;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #d4af37;
+    font-size: 35px;
+}
+
+.item-meu-agendamento::after{
+    content: "";
+    display: block;
+    width: 1px;
+    height: 110px;
+    background-color: rgba(212, 175, 55, 0.7);
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.item-meu-agendamento > div:first-child{
+    grid-column: 3;
+}
+
+.item-meu-agendamento > div:first-child::after{
+    content: "";
+    display: block;
+    width: 1px;
+    height: 110px;
+    background-color: rgba(255,255,255,0.2);
+
+    position: absolute;
+    right: -28px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.item-meu-agendamento > div:first-child{
+    position: relative;
+}
+
+.item-meu-agendamento > div:last-child{
+    grid-column: 5;
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.item-meu-agendamento strong{
+    display: block;
+    color: white;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.item-meu-agendamento p{
+    color: #f1f1f1;
+    font-size: 16px;
+    margin: 8px 0;
+}
+
+.item-meu-agendamento p::before{
+    color: #d4af37;
+    margin-right: 8px;
+}
+
+.item-meu-agendamento p:nth-child(2)::before{
+    content: "📅";
+}
+
+.item-meu-agendamento p:nth-child(3)::before{
+    content: "🕒";
+}
+
+.status-agendamento{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+
+    background-color: rgba(31, 111, 63, 0.2);
+    color: #37d66b;
+
+    border: 1px solid #1f9d4c;
+
+    padding: 10px 22px;
+    border-radius: 30px;
+
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-agendamento::before{
+    content: "✓";
+    margin-right: 8px;
+}
+
+.item-meu-agendamento button{
+    background-color: #d4af37;
+    color: black;
+
+    border: none;
+
+    width: 180px;
+    height: 42px;
+
+    border-radius: 30px;
+
+    font-weight: bold;
+    font-size: 16px;
+
+    cursor: pointer;
+    transition: 0.3s;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-meu-agendamento button:hover{
+    transform: scale(1.05);
+}
+
+.item-meu-agendamento button::before{
+    content: "✖ ";
+}
+@media(max-width: 900px){
+    .item-meu-agendamento{
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .item-meu-agendamento::before{
+        margin: auto;
+    }
+
+    .item-meu-agendamento::after,
+    .item-meu-agendamento > div:first-child::after{
+        display: none;
+    }
+
+    .item-meu-agendamento > div:first-child,
+    .item-meu-agendamento > div:last-child{
+        grid-column: auto;
+    }
+
+    .item-meu-agendamento > div:last-child{
+        align-items: center;
+    }
+}
+.reagendar-container{
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    padding: 80px 8%;
+    background-color: #111;
+}
+
+.form-reagendar{
+    width: 100%;
+    max-width: 500px;
+
+    background-color: #000;
+    border: 1px solid #d4af37;
+    border-radius: 20px;
+
+    padding: 40px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-reagendar h2{
+    color: #d4af37;
+    text-align: center;
+    font-size: 35px;
+}
+
+.form-reagendar label{
+    color: #d4af37;
+    font-weight: bold;
+}
+
+.form-reagendar input,
+.form-reagendar select{
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 16px;
+}
