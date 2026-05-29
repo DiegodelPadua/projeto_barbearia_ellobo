@@ -24,11 +24,13 @@ const insertAgendamento = async function (agendamento) {
     }
 }
 
-const buscarAgendamentoPorDataHorario = async function (data, horario) {
+const buscarAgendamentoPorDataHorario = async function(data, horario){
     const agendamentos = await selectAgendamentos()
 
-    return agendamentos.find(function (agendamento) {
-        return agendamento.data === data && agendamento.horario === horario
+    return agendamentos.find(function(agendamento){
+        return agendamento.data === data &&
+               agendamento.horario === horario &&
+               agendamento.statusAgendamento === 'confirmado'
     })
 }
 

@@ -29,12 +29,18 @@ document.addEventListener('DOMContentLoaded', function(){
     const inputDataAgendamentoAdmin = document.getElementById('data-agendamento-admin')
     const tabelaAgendamentos = document.getElementById('tabela-agendamentos')
 
+    const totalAgendamentosHoje = document.getElementById('total-agendamentos-hoje')
+    const totalClientes = document.getElementById('total-clientes')
+    const faturamentoHoje = document.getElementById('faturamento-hoje')
+    const proximoAtendimento = document.getElementById('proximo-atendimento')
+
     const API_COLABORADORES = 'http://localhost:8080/colaboradores'
     const API_SERVICOS = 'http://localhost:8080/servicos'
     const API_HORARIOS = 'http://localhost:8080/horarios'
     const API_BLOQUEIOS = 'http://localhost:8080/bloqueios'
     const API_AGENDAMENTOS = 'http://localhost:8080/agendamentos'
-    
+    const API_CLIENTES = 'http://localhost:8080/clientes'
+
 
     let colaboradorLogado = JSON.parse(localStorage.getItem('colaboradorLogado'))
 
@@ -83,12 +89,9 @@ document.addEventListener('DOMContentLoaded', function(){
     function abrirPainel(){
         areaLoginAdmin.classList.add('escondido')
         painelAdmin.classList.remove('escondido')
+    
+        carregarDashboard()
     }
-
-    btnGerenciarServicos.addEventListener('click', function(){
-        secaoServicos.classList.toggle('escondido')
-        carregarServicosAdmin()
-    })
 
     async function carregarServicosAdmin(){
         try {
@@ -508,14 +511,15 @@ document.addEventListener('DOMContentLoaded', function(){
             const dadosAgendamentos = await respostaAgendamentos.json()
     
             const agendamentosDoDia = dadosAgendamentos.agendamentos.filter(function(agendamento){
-                return agendamento.data === data
+                return agendamento.data === data &&
+                       agendamento.statusAgendamento === 'confirmado'
             })
     
             const horariosDisponiveis = dadosHorarios.horariosDisponiveis
     
-            const horariosOcupados = agendamentosDoDia.map(function(agendamento){
+            const horariosOcupados = [...new Set(agendamentosDoDia.map(function(agendamento){
                 return agendamento.horario
-            })
+            }))]
     
             const todosHorarios = [
                 ...horariosDisponiveis,
@@ -541,42 +545,136 @@ document.addEventListener('DOMContentLoaded', function(){
                 if (agendamentoEncontrado) {
                     linha.innerHTML = `
                         <strong>${horario}</strong>
-    
+                
                         <span class="status-ocupado">
                             Ocupado
                         </span>
-    
+                
                         <span>
                             Cliente: ${agendamentoEncontrado.cliente.nome}
                         </span>
-    
+                
                         <span>
                             Serviço: ${agendamentoEncontrado.servico.nome}
                         </span>
+                
+                        <button 
+                            class="btn-deletar"
+                            onclick="cancelarAgendamentoAdmin(${agendamentoEncontrado.id})"
+                        >
+                            Remover
+                        </button>
                     `
                 } else {
                     linha.innerHTML = `
                         <strong>${horario}</strong>
-    
+                
                         <span class="status-livre">
                             Disponível
                         </span>
-    
+                
                         <span>
                             Cliente: -
                         </span>
-    
+                
                         <span>
                             Serviço: -
                         </span>
+                
+                        <span>-</span>
                     `
                 }
-    
                 tabelaAgendamentos.appendChild(linha)
             })
     
         } catch (error) {
             alert('Erro ao carregar tabela de horários.')
+            console.log(error)
+        }
+    }
+
+    async function carregarDashboard(){
+        try {
+            const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+            const dadosAgendamentos = await respostaAgendamentos.json()
+    
+            const respostaClientes = await fetch(API_CLIENTES)
+            const dadosClientes = await respostaClientes.json()
+    
+            const hoje = new Date().toLocaleDateString('sv-SE')
+    
+            const agendamentosConfirmados = dadosAgendamentos.agendamentos.filter(function(agendamento){
+                return agendamento.statusAgendamento === 'confirmado'
+            })
+    
+            const agendamentosHoje = agendamentosConfirmados.filter(function(agendamento){
+                return agendamento.data === hoje
+            })
+    
+            totalAgendamentosHoje.textContent = agendamentosHoje.length
+            totalClientes.textContent = dadosClientes.clientes.length
+    
+            const totalFaturamento = agendamentosHoje.reduce(function(total, agendamento){
+                return total + Number(agendamento.servico?.preco || 0)
+            }, 0)
+    
+            faturamentoHoje.textContent = totalFaturamento.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            })
+    
+            const agora = new Date()
+    
+            const proximos = agendamentosHoje.filter(function(agendamento){
+                const dataHora = new Date(`${agendamento.data}T${agendamento.horario}:00`)
+                return dataHora >= agora
+            })
+    
+            proximos.sort(function(a, b){
+                return a.horario.localeCompare(b.horario)
+            })
+    
+            if(proximos.length > 0){
+                proximoAtendimento.textContent = `${proximos[0].horario} - ${proximos[0].cliente.nome}`
+            }else{
+                proximoAtendimento.textContent = '-'
+            }
+    
+        } catch(error) {
+            console.log(error)
+            alert('Erro ao carregar dashboard.')
+        }
+    }
+
+    window.cancelarAgendamentoAdmin = async function(id){
+        const confirmar = confirm('Tem certeza que deseja remover este agendamento?')
+    
+        if(!confirmar){
+            return
+        }
+    
+        try {
+            const resposta = await fetch(`${API_AGENDAMENTOS}/${id}/cancelar`, {
+                method: 'PUT'
+            })
+    
+            const dados = await resposta.json()
+    
+            if(resposta.ok){
+                alert('Agendamento removido com sucesso.')
+    
+                if(inputDataAgendamentoAdmin.value){
+                    carregarTabelaAgendamentos(inputDataAgendamentoAdmin.value)
+                }
+    
+                carregarDashboard()
+    
+            }else{
+                alert(dados.message)
+            }
+    
+        } catch(error){
+            alert('Erro ao remover agendamento.')
             console.log(error)
         }
     }
