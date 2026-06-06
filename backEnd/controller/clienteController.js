@@ -1,12 +1,12 @@
 const clienteDAO = require('../model/clienteDAO')
 
 const criarConta = async function (request, response) {
-    const { nome, email, senha } = request.body
+    const { nome, email, telefone, senha } = request.body
 
-    if (!nome || !email || !senha) {
+    if (!nome || !email || !telefone || !senha) {
         return response.status(400).json({
             status: false,
-            message: 'Nome, email e senha são obrigatórios.'
+            message: 'Nome, email, telefone e senha são obrigatórios.'
         })
     }
 
@@ -23,6 +23,7 @@ const criarConta = async function (request, response) {
         id: Date.now(),
         nome,
         email,
+        telefone,
         senha,
         dataCadastro: new Date().toLocaleString('pt-BR')
     }
@@ -36,7 +37,8 @@ const criarConta = async function (request, response) {
             cliente: {
                 id: novoCliente.id,
                 nome: novoCliente.nome,
-                email: novoCliente.email
+                email: novoCliente.email,
+                telefone: novoCliente.telefone
             }
         })
     }
@@ -72,7 +74,8 @@ const loginCliente = async function (request, response) {
         cliente: {
             id: cliente.id,
             nome: cliente.nome,
-            email: cliente.email
+            email: cliente.email,
+            telefone: cliente.telefone
         }
     })
 }

@@ -7,12 +7,16 @@
 
     <link rel="stylesheet" href="./css/style.css">
 </head>
+<link rel="icon" type="image/png" href="./images/logo-el-lobo.png">
 <body>
 
     <header>
 
         <div class="logo">
-            EL LOBO 💈🐺
+            <img
+                src="./images/logo-el-lobo.png"
+                alt="Barbearia EL LOBO"
+            >
         </div>
 
         <nav>
@@ -64,11 +68,17 @@
                 Criar Conta
             </h2>
 
-            <input type="text" id="cadastro-nome" placeholder="Nome completo" required>
+           
+
             <input type="email" id="cadastro-email" placeholder="Email" required>
+
+            <input type="tel" id="cadastro-telefone" placeholder="(11) 98765-4321" maxlength="15" required>
+
             <input type="password" id="cadastro-senha" placeholder="Senha" required>
 
+            <input type="password" id="cadastro-confirmar-senha" placeholder="Confirmar senha" required>
             <button type="submit">
+                
                 Criar conta
             </button>
 
@@ -297,7 +307,7 @@
                     </p>
 
                     <span>
-                        Confira os horários disponíveis e garanta seu atendimento.
+                        Confira os horários disponíveis e garanta o seu atendimento.
                     </span>
 
                 </div>

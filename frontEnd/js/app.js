@@ -96,10 +96,19 @@ mostrarCadastro.addEventListener('click', function () {
 formCadastro.addEventListener('submit', async function (event) {
     event.preventDefault()
 
+   const senha = document.getElementById('cadastro-senha').value.trim()
+   const confirmarSenha = document.getElementById('cadastro-confirmar-senha').value.trim()
+
+    if(senha !== confirmarSenha){
+        alert('As senhas não conferem.')
+        return
+    }
+
     const cliente = {
         nome: document.getElementById('cadastro-nome').value.trim(),
         email: document.getElementById('cadastro-email').value.trim(),
-        senha: document.getElementById('cadastro-senha').value.trim()
+        telefone: document.getElementById('cadastro-telefone').value.trim(),
+        senha: senha
     }
 
     const resposta = await fetch(`${API_CLIENTES}/cadastro`, {

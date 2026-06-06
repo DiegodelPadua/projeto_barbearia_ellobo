@@ -1,30 +1,26 @@
 [
     {
-        "id": 1779796341849,
-        "nome": "Diego",
-        "email": "diego@email.com",
+        "id": 1780767573829,
+        "nome": "Manoel",
+        "email": "manoel@gmail.com",
+        "telefone": "5511951752200",
         "senha": "123456",
-        "dataCadastro": "26/05/2026, 08:52:21"
+        "dataCadastro": "06/06/2026, 14:39:33"
     },
     {
-        "id": 1779888649653,
+        "id": 1780771909693,
+        "nome": "Manoel",
+        "email": "manoel12@gmail.com",
+        "telefone": "1199999999",
+        "senha": "123456",
+        "dataCadastro": "06/06/2026, 15:51:49"
+    },
+    {
+        "id": 1780772905929,
         "nome": "diego",
-        "email": "diego.lemos@docente.senai.br",
-        "senha": "Rosalina10**",
-        "dataCadastro": "27/05/2026, 10:30:49"
-    },
-    {
-        "id": 1779971652734,
-        "nome": "May",
-        "email": "may@gmail.com",
-        "senha": "may123",
-        "dataCadastro": "28/05/2026, 09:34:12"
-    },
-    {
-        "id": 1780064422089,
-        "nome": "Diego",
-        "email": "diegopblemoos@gmail.com",
-        "senha": "Rosalina10**",
-        "dataCadastro": "29/05/2026, 11:20:22"
+        "email": "diego@email.com",
+        "telefone": "1199999999",
+        "senha": "123456",
+        "dataCadastro": "06/06/2026, 16:08:25"
     }
 ]

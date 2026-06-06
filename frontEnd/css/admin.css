@@ -412,3 +412,100 @@ button:hover{
     padding: 10px;
     border-radius: 20px;
 }
+.card-cliente{
+    background-color: #111;
+    border: 1px solid #d4af37;
+    border-radius: 15px;
+
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card-cliente h3{
+    color: #d4af37;
+    margin-bottom: 15px;
+}
+
+.card-cliente p{
+    margin: 8px 0;
+}
+.card-cliente hr{
+    border: none;
+    border-top: 1px solid #333;
+    margin: 18px 0;
+}
+
+.historico-servicos{
+    margin-top: 15px;
+}
+
+.historico-servicos strong{
+    color: #d4af37;
+}
+
+.historico-servicos ul{
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.historico-servicos li{
+    margin-bottom: 6px;
+    color: #ddd;
+}
+/* =========================
+   RESPONSIVIDADE ADMIN
+========================= */
+
+@media (max-width: 768px){
+
+    .admin-header{
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .admin-cards{
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-resumo{
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card{
+        width: 100%;
+    }
+
+    .item-servico,
+    .item-horario,
+    .item-bloqueio,
+    .linha-agendamento{
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .item-servico button,
+    .item-horario button,
+    .item-bloqueio button,
+    .linha-agendamento button{
+        width: 100%;
+    }
+
+    .card-cliente{
+        width: 100%;
+    }
+
+    .form-servico,
+    .form-bloqueio{
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-servico input,
+    .form-bloqueio input,
+    .form-bloqueio select{
+        width: 100%;
+    }
+}

@@ -16,5 +16,60 @@
         "horario": "15:00",
         "statusAgendamento": "cancelado",
         "dataCadastro": "29/05/2026, 11:23:43"
+    },
+    {
+        "id": 1780765740757,
+        "cliente": {
+            "id": 1779796341849,
+            "nome": "Diego",
+            "email": "diego@email.com"
+        },
+        "servico": {
+            "id": 1,
+            "nome": "Corte Masculino",
+            "preco": 50,
+            "duracao": 30
+        },
+        "data": "2026-06-08",
+        "horario": "10:30",
+        "statusAgendamento": "cancelado",
+        "dataCadastro": "06/06/2026, 14:09:00"
+    },
+    {
+        "id": 1780765797298,
+        "cliente": {
+            "id": 1779888649653,
+            "nome": "diego",
+            "email": "diego.lemos@docente.senai.br"
+        },
+        "servico": {
+            "id": 1,
+            "nome": "Corte Masculino",
+            "preco": 50,
+            "duracao": 30
+        },
+        "data": "2026-06-08",
+        "horario": "11:00",
+        "statusAgendamento": "cancelado",
+        "dataCadastro": "06/06/2026, 14:09:57"
+    },
+    {
+        "id": 1780771938464,
+        "cliente": {
+            "id": 1780771909693,
+            "nome": "Manoel",
+            "email": "manoel12@gmail.com",
+            "telefone": "1199999999"
+        },
+        "servico": {
+            "id": 3,
+            "nome": "Barba no Vapor",
+            "preco": 60,
+            "duracao": 40
+        },
+        "data": "2026-06-13",
+        "horario": "13:00",
+        "statusAgendamento": "confirmado",
+        "dataCadastro": "06/06/2026, 15:52:18"
     }
 ]

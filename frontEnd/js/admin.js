@@ -21,10 +21,20 @@ document.addEventListener('DOMContentLoaded', function(){
     const selectDiaInteiro = document.getElementById('bloqueio-dia-inteiro')
     const inputHorarioBloqueio = document.getElementById('bloqueio-horario')
 
+    const btnClientes = document.getElementById('btn-clientes')
+    const secaoClientes = document.getElementById('secao-clientes')
+    const listaClientes = document.getElementById('lista-clientes')
+
     const btnVerAgendamentos = document.getElementById('btn-ver-agendamentos')
     const secaoAgendamentos = document.getElementById('secao-agendamentos')
     const listaAgendamentos = document.getElementById('lista-agendamentos')
 
+    const faturamentoSemana = document.getElementById('faturamento-semana')
+    const faturamentoMes = document.getElementById('faturamento-mes')
+    const totalConfirmados = document.getElementById('total-confirmados')
+    const servicoMaisVendido = document.getElementById('servico-mais-vendido')
+    const clienteMaisFrequente = document.getElementById('cliente-mais-frequente')
+    
     const btnBuscarAgendamentos = document.getElementById('btn-buscar-agendamentos')
     const inputDataAgendamentoAdmin = document.getElementById('data-agendamento-admin')
     const tabelaAgendamentos = document.getElementById('tabela-agendamentos')
@@ -92,6 +102,14 @@ document.addEventListener('DOMContentLoaded', function(){
     
         carregarDashboard()
     }
+
+    btnGerenciarServicos.addEventListener('click', function(){
+
+    secaoServicos.classList.toggle('escondido')
+
+    carregarServicosAdmin()
+
+    })
 
     async function carregarServicosAdmin(){
         try {
@@ -490,6 +508,14 @@ document.addEventListener('DOMContentLoaded', function(){
     btnVerAgendamentos.addEventListener('click', function(){
         secaoAgendamentos.classList.toggle('escondido')
     })
+
+    btnClientes.addEventListener('click', function(){
+
+        secaoClientes.classList.toggle('escondido')
+
+        carregarClientes()
+
+    })
     
     btnBuscarAgendamentos.addEventListener('click', async function(){
         const data = inputDataAgendamentoAdmin.value
@@ -677,5 +703,216 @@ document.addEventListener('DOMContentLoaded', function(){
             alert('Erro ao remover agendamento.')
             console.log(error)
         }
+    }
+
+   async function carregarClientes(){
+
+    try{
+
+        const respostaClientes = await fetch(API_CLIENTES)
+        const dadosClientes = await respostaClientes.json()
+
+        const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+        const dadosAgendamentos = await respostaAgendamentos.json()
+
+        listaClientes.innerHTML = ''
+
+        dadosClientes.clientes.forEach(function(cliente){
+
+            const agendamentosCliente = dadosAgendamentos.agendamentos.filter(function(agendamento){
+                return agendamento.cliente &&
+                       agendamento.cliente.id == cliente.id
+            })
+
+            const agendamentosConfirmados = agendamentosCliente.filter(function(agendamento){
+                return agendamento.statusAgendamento === 'confirmado'
+            })
+
+            const agendamentosCancelados = agendamentosCliente.filter(function(agendamento){
+                return agendamento.statusAgendamento === 'cancelado'
+            })
+
+            const totalGasto = agendamentosConfirmados.reduce(function(total, agendamento){
+                return total + Number(agendamento.servico?.preco || 0)
+            }, 0)
+
+            const ultimaVisita = agendamentosConfirmados.length > 0
+                ? agendamentosConfirmados[agendamentosConfirmados.length - 1].data
+                : 'Nenhuma'
+
+            const servicosRealizados = agendamentosConfirmados.map(function(agendamento){
+                return agendamento.servico?.nome || 'Serviço não informado'
+            })
+
+            const listaServicos = servicosRealizados.length > 0
+                ? servicosRealizados.map(function(servico){
+                    return `<li>${servico}</li>`
+                }).join('')
+                : '<li>Nenhum serviço confirmado</li>'
+
+            const card = document.createElement('div')
+            card.classList.add('card-cliente')
+
+            card.innerHTML = `
+                <h3>${cliente.nome}</h3>
+
+                <p><strong>Email:</strong> ${cliente.email}</p>
+                <p><strong>Telefone:</strong> ${cliente.telefone || 'Não informado'}</p>
+
+                <hr>
+
+                <p><strong>Agendamentos confirmados:</strong> ${agendamentosConfirmados.length}</p>
+                <p><strong>Cancelamentos:</strong> ${agendamentosCancelados.length}</p>
+                <p><strong>Última visita:</strong> ${ultimaVisita}</p>
+
+                <p>
+                    <strong>Total gasto:</strong>
+                    ${totalGasto.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    })}
+                </p>
+
+                <div class="historico-servicos">
+                    <strong>Serviços realizados:</strong>
+
+                    <ul>
+                        ${listaServicos}
+                    </ul>
+                </div>
+            `
+
+            listaClientes.appendChild(card)
+
+        })
+
+    }catch(error){
+
+        alert('Erro ao carregar clientes.')
+        console.log(error)
+
+    }
+
+    }
+
+    async function carregarDashboard(){
+    try {
+        const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+        const dadosAgendamentos = await respostaAgendamentos.json()
+
+        const respostaClientes = await fetch(API_CLIENTES)
+        const dadosClientes = await respostaClientes.json()
+
+        const hoje = new Date()
+        const hojeFormatado = hoje.toLocaleDateString('sv-SE')
+
+        const inicioSemana = new Date(hoje)
+        inicioSemana.setDate(hoje.getDate() - hoje.getDay())
+
+        const anoAtual = hoje.getFullYear()
+        const mesAtual = hoje.getMonth()
+
+        const agendamentosConfirmados = dadosAgendamentos.agendamentos.filter(function(agendamento){
+            return agendamento.statusAgendamento === 'confirmado'
+        })
+
+        const agendamentosHoje = agendamentosConfirmados.filter(function(agendamento){
+            return agendamento.data === hojeFormatado
+        })
+
+        const agendamentosSemana = agendamentosConfirmados.filter(function(agendamento){
+            const dataAgendamento = new Date(agendamento.data + 'T00:00:00')
+            return dataAgendamento >= inicioSemana && dataAgendamento <= hoje
+        })
+
+        const agendamentosMes = agendamentosConfirmados.filter(function(agendamento){
+            const dataAgendamento = new Date(agendamento.data + 'T00:00:00')
+            return dataAgendamento.getFullYear() === anoAtual &&
+                   dataAgendamento.getMonth() === mesAtual
+        })
+
+        totalAgendamentosHoje.textContent = agendamentosHoje.length
+        totalClientes.textContent = dadosClientes.clientes.length
+        totalConfirmados.textContent = agendamentosConfirmados.length
+
+        const totalHoje = calcularFaturamento(agendamentosHoje)
+        const totalSemana = calcularFaturamento(agendamentosSemana)
+        const totalMes = calcularFaturamento(agendamentosMes)
+
+        faturamentoHoje.textContent = formatarMoeda(totalHoje)
+        faturamentoSemana.textContent = formatarMoeda(totalSemana)
+        faturamentoMes.textContent = formatarMoeda(totalMes)
+
+        servicoMaisVendido.textContent = encontrarMaisFrequente(
+            agendamentosConfirmados,
+            function(agendamento){
+                return agendamento.servico?.nome
+            }
+        )
+
+        clienteMaisFrequente.textContent = encontrarMaisFrequente(
+            agendamentosConfirmados,
+            function(agendamento){
+                return agendamento.cliente?.nome
+            }
+        )
+
+        const agora = new Date()
+
+        const proximos = agendamentosHoje.filter(function(agendamento){
+            const dataHora = new Date(`${agendamento.data}T${agendamento.horario}:00`)
+            return dataHora >= agora
+        })
+
+        proximos.sort(function(a, b){
+            return a.horario.localeCompare(b.horario)
+        })
+
+        if(proximos.length > 0){
+            proximoAtendimento.textContent = `${proximos[0].horario} - ${proximos[0].cliente.nome}`
+        }else{
+            proximoAtendimento.textContent = '-'
+        }
+
+    } catch(error) {
+        console.log(error)
+        alert('Erro ao carregar dashboard financeiro.')
+    }
+    }
+    function calcularFaturamento(listaAgendamentos){
+    return listaAgendamentos.reduce(function(total, agendamento){
+        return total + Number(agendamento.servico?.preco || 0)
+    }, 0)
+}
+
+function formatarMoeda(valor){
+    return valor.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    })
+}
+
+function encontrarMaisFrequente(listaAgendamentos, pegarValor){
+    const contador = {}
+
+    listaAgendamentos.forEach(function(agendamento){
+        const valor = pegarValor(agendamento)
+
+        if(valor){
+            contador[valor] = (contador[valor] || 0) + 1
+        }
+    })
+
+    let maisFrequente = '-'
+    let maiorQuantidade = 0
+
+    Object.keys(contador).forEach(function(valor){
+        if(contador[valor] > maiorQuantidade){
+            maiorQuantidade = contador[valor]
+            maisFrequente = valor
+        }
+    })
+
+    return maisFrequente
     }
 })

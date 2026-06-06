@@ -55,12 +55,49 @@
                     <h3>Próximo Atendimento</h3>
                     <strong id="proximo-atendimento">-</strong>
                 </div>
+
+                <div class="dashboard-card">
+                    <h3>Faturamento Semana</h3>
+                    <strong id="faturamento-semana">R$ 0,00</strong>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Faturamento Mês</h3>
+                    <strong id="faturamento-mes">R$ 0,00</strong>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Total Confirmados</h3>
+                    <strong id="total-confirmados">0</strong>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Serviço Mais Vendido</h3>
+                    <strong id="servico-mais-vendido">-</strong>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Cliente Mais Frequente</h3>
+                    <strong id="cliente-mais-frequente">-</strong>
+                </div>
             
             </section>
 
 
             <div class="admin-cards">
 
+
+                <div class="admin-card">
+                    <h2>Clientes</h2>
+
+                    <p>
+                        Visualize o histórico dos clientes.
+                    </p>
+
+                    <button id="btn-clientes">
+                        Ver Clientes
+                    </button>
+                </div>
                 <div class="admin-card">
                     <h2>Serviços</h2>
                     <p>Gerencie os serviços da barbearia.</p>
@@ -90,6 +127,14 @@
                 </div>
 
             </div>
+
+            <section class="secao-admin escondido" id="secao-clientes">
+
+                <h2>Clientes Cadastrados</h2>
+
+                <div id="lista-clientes"></div>
+
+            </section>
 
             <section class="secao-admin escondido" id="secao-servicos">
 

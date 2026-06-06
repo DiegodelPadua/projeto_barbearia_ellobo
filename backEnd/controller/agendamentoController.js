@@ -64,7 +64,8 @@ const criarAgendamento = async function(request, response){
         cliente: {
             id: cliente.id,
             nome: cliente.nome,
-            email: cliente.email
+            email: cliente.email,
+            telefone: cliente.telefone
         },
 
         servico: {
