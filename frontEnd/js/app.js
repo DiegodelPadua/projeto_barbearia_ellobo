@@ -94,6 +94,9 @@ mostrarCadastro.addEventListener('click', function () {
 })
 
 formCadastro.addEventListener('submit', async function (event) {
+
+    console.log('BOTÃO CADASTRAR FOI CLICADO')
+
     event.preventDefault()
 
    const senha = document.getElementById('cadastro-senha').value.trim()
