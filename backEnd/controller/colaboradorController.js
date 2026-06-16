@@ -1,4 +1,9 @@
 const colaboradorDAO = require('../model/colaboradorDAO')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+
+const JWT_SECRET = 'chave_secreta_el_lobo'
+
 
 const listarColaboradores = async function (request, response) {
     const colaboradores = await colaboradorDAO.selectColaboradores()
@@ -28,9 +33,22 @@ const loginColaborador = async function (request, response) {
             message: 'Email ou senha inválidos.'
         })
     }
+    const token = jwt.sign(
+        {
+            id: colaborador.id,
+            nome: colaborador.nome,
+            email: colaborador.email,
+            tipo: 'admin'
+        },
+        JWT_SECRET,
+        {
+            expiresIn: '2h'
+        }
+    )
 
     return response.status(200).json({
         status: true,
+        token,
         message: 'Login realizado com sucesso.',
         colaborador: {
             id: colaborador.id,

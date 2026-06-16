@@ -71,5 +71,43 @@
         "horario": "13:00",
         "statusAgendamento": "confirmado",
         "dataCadastro": "06/06/2026, 15:52:18"
+    },
+    {
+        "id": 1781635562080,
+        "cliente": {
+            "id": 1781631740579,
+            "nome": "DIEGO DE PADUA BEZERRA DE LEMOS",
+            "email": "diego.lemos@docente.senai.br",
+            "telefone": "11951752200"
+        },
+        "servico": {
+            "id": 7,
+            "nome": "Limpeza Facial",
+            "preco": 50,
+            "duracao": 45
+        },
+        "data": "2026-06-18",
+        "horario": "15:30",
+        "statusAgendamento": "cancelado",
+        "dataCadastro": "16/06/2026, 15:46:02"
+    },
+    {
+        "id": 1781635582672,
+        "cliente": {
+            "id": 1781631740579,
+            "nome": "DIEGO DE PADUA BEZERRA DE LEMOS",
+            "email": "diego.lemos@docente.senai.br",
+            "telefone": "11951752200"
+        },
+        "servico": {
+            "id": 3,
+            "nome": "Barba no Vapor",
+            "preco": 60,
+            "duracao": 40
+        },
+        "data": "2026-06-18",
+        "horario": "15:30",
+        "statusAgendamento": "cancelado",
+        "dataCadastro": "16/06/2026, 15:46:22"
     }
 ]

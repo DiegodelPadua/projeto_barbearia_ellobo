@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
 
     let colaboradorLogado = JSON.parse(localStorage.getItem('colaboradorLogado'))
+    let tokenAdmin = localStorage.getItem('tokenAdmin')
+    
 
     if (colaboradorLogado) {
         abrirPainel()
@@ -78,7 +80,10 @@ document.addEventListener('DOMContentLoaded', function(){
             const dados = await resposta.json()
 
             if (resposta.ok) {
+                 colaboradorLogado = dados.colaborador
+                 tokenAdmin = dados.token
                 localStorage.setItem('colaboradorLogado', JSON.stringify(dados.colaborador))
+                localStorage.setItem('tokenAdmin', dados.token)
                 alert(`Bem-vindo, ${dados.colaborador.nome}`)
                 abrirPainel()
             } else {
@@ -93,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     btnSair.addEventListener('click', function(){
         localStorage.removeItem('colaboradorLogado')
+        localStorage.removeItem('tokenAdmin')
         location.reload()
     })
 
@@ -166,12 +172,13 @@ document.addEventListener('DOMContentLoaded', function(){
 
         try {
             const resposta = await fetch(API_SERVICOS, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(novoServico)
-            })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenAdmin}`
+            },
+            body: JSON.stringify(novoServico)
+        })
 
             const dados = await resposta.json()
 
@@ -198,8 +205,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
         try {
             const resposta = await fetch(`${API_SERVICOS}/${id}`, {
-                method: 'DELETE'
-            })
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${tokenAdmin}`
+            }
+        })
 
             const dados = await resposta.json()
 
@@ -237,13 +247,14 @@ document.addEventListener('DOMContentLoaded', function(){
         }
 
         try {
-            const resposta = await fetch(`${API_SERVICOS}/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(servicoAtualizado)
-            })
+           const resposta = await fetch(`${API_SERVICOS}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenAdmin}`
+            },
+            body: JSON.stringify(servicoAtualizado)
+        })
 
             const dados = await resposta.json()
 
@@ -355,12 +366,13 @@ document.addEventListener('DOMContentLoaded', function(){
 
         try {
             const resposta = await fetch(`${API_HORARIOS}/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(horarioAtualizado)
-            })
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenAdmin}`
+            },
+            body: JSON.stringify(horarioAtualizado)
+        })
 
             const dados = await resposta.json()
 
@@ -415,13 +427,14 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     
         try {
-            const resposta = await fetch(API_BLOQUEIOS, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(novoBloqueio)
-            })
+           const resposta = await fetch(API_BLOQUEIOS, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${tokenAdmin}`
+            },
+            body: JSON.stringify(novoBloqueio)
+        })
     
             const dados = await resposta.json()
     
@@ -488,8 +501,11 @@ document.addEventListener('DOMContentLoaded', function(){
     
         try {
             const resposta = await fetch(`${API_BLOQUEIOS}/${id}`, {
-                method: 'DELETE'
-            })
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${tokenAdmin}`
+            }
+        })
     
             const dados = await resposta.json()
     
@@ -624,7 +640,11 @@ document.addEventListener('DOMContentLoaded', function(){
             const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
             const dadosAgendamentos = await respostaAgendamentos.json()
     
-            const respostaClientes = await fetch(API_CLIENTES)
+            const respostaClientes = await fetch(API_CLIENTES, {
+            headers: {
+                'Authorization': `Bearer ${tokenAdmin}`
+            }
+        })
             const dadosClientes = await respostaClientes.json()
     
             const hoje = new Date().toLocaleDateString('sv-SE')
@@ -680,9 +700,12 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     
         try {
-            const resposta = await fetch(`${API_AGENDAMENTOS}/${id}/cancelar`, {
-                method: 'PUT'
-            })
+           const resposta = await fetch(`${API_AGENDAMENTOS}/${id}/remover-admin`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${tokenAdmin}`
+            }
+        })
     
             const dados = await resposta.json()
     
@@ -709,7 +732,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
     try{
 
-        const respostaClientes = await fetch(API_CLIENTES)
+        const respostaClientes = await fetch(API_CLIENTES, {
+        headers: {
+            'Authorization': `Bearer ${tokenAdmin}`
+        }
+    })
         const dadosClientes = await respostaClientes.json()
 
         const respostaAgendamentos = await fetch(API_AGENDAMENTOS)

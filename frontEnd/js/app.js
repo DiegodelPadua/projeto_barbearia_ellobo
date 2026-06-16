@@ -36,6 +36,7 @@ const API_HORARIOS = 'http://localhost:8080/horarios'
 const API_AGENDAMENTOS = 'http://localhost:8080/agendamentos'
 
 let clienteLogado = JSON.parse(localStorage.getItem('clienteLogado'))
+let tokenCliente = localStorage.getItem('tokenCliente')
 
 verificarClienteLogado()
 
@@ -126,10 +127,13 @@ formCadastro.addEventListener('submit', async function (event) {
 
     if (resposta.ok) {
         clienteLogado = dados.cliente
+
         localStorage.setItem('clienteLogado', JSON.stringify(clienteLogado))
+        localStorage.setItem('tokenCliente', dados.token)
 
         alert('Conta criada com sucesso 💈')
         verificarClienteLogado()
+
     } else {
         alert(dados.message)
     }
@@ -155,9 +159,10 @@ formLogin.addEventListener('submit', async function (event) {
 
     if (resposta.ok) {
         clienteLogado = dados.cliente
+
         localStorage.setItem('clienteLogado', JSON.stringify(clienteLogado))
 
-        alert(`Bem-vindo, ${clienteLogado.nome} 💈`)
+        alert('Bem-Vindo meu Brother! 💈')
         verificarClienteLogado()
     } else {
         alert(dados.message)
@@ -316,7 +321,11 @@ async function carregarMeusAgendamentos(){
 
 btnSairCliente.addEventListener('click', function () {
     localStorage.removeItem('clienteLogado')
+    localStorage.removeItem('tokenCliente')
+
     clienteLogado = null
+    tokenCliente = null
+
     location.reload()
 })
 window.cancelarMeuAgendamento = async function(id){
