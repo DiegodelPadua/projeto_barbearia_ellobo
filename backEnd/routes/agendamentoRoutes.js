@@ -17,5 +17,10 @@ router.put(
     autenticacao.validarTokenAdmin,
     agendamentoController.cancelarAgendamento
 )
+router.delete(
+    '/:id/remover-admin',
+    autenticacao.validarTokenAdmin,
+    agendamentoController.deletarAgendamento
+)
 
 module.exports = router

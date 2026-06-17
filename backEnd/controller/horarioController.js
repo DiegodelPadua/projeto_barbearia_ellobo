@@ -114,15 +114,27 @@ const listarHorariosDisponiveis = async function (request, response) {
     )
 
     const horariosDisponiveis = horariosGerados.filter(function (horario) {
+
         const bloqueado = bloqueios.find(function (bloqueio) {
-            return bloqueio.data === data && bloqueio.horario === horario
+
+            if (bloqueio.data !== data) {
+                return false
+            }
+
+            if (bloqueio.diaInteiro === true) {
+                return true
+            }
+
+            return horario >= bloqueio.horarioInicio &&
+                horario < bloqueio.horarioFim
         })
 
         const agendado = agendamentos.find(function (agendamento) {
             return agendamento.data === data &&
-                   agendamento.horario === horario &&
-                   agendamento.statusAgendamento === 'confirmado'
+                agendamento.horario === horario &&
+                agendamento.statusAgendamento === 'confirmado'
         })
+
         return !bloqueado && !agendado
     })
 

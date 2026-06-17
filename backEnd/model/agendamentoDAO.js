@@ -84,11 +84,34 @@ const reagendarAgendamento = async function(id, novaData, novoHorario){
     }
 }
 
+const deletarAgendamento = async function(id){
+    try {
+        const agendamentos = await selectAgendamentos()
+
+        const novosAgendamentos = agendamentos.filter(function(agendamento){
+            return agendamento.id != id
+        })
+
+        if(novosAgendamentos.length === agendamentos.length){
+            return false
+        }
+
+        fs.writeFileSync(caminhoArquivo, JSON.stringify(novosAgendamentos, null, 4))
+
+        return true
+
+    } catch(error) {
+        console.log('ERRO NO DAO deletarAgendamento:', error)
+        return false
+    }
+}
+
 
 module.exports = {
     selectAgendamentos,
     insertAgendamento,
     buscarAgendamentoPorDataHorario,
     cancelarAgendamento,
-    reagendarAgendamento
+    reagendarAgendamento,
+    deletarAgendamento
 }

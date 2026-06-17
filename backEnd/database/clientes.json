@@ -6,5 +6,13 @@
         "telefone": "11951752200",
         "senha": "$2b$10$LzEzTdjp8RfUGlW1eYGn0uOIlpsHfxNW3WCyJbUGZBurFMRu0mDzm",
         "dataCadastro": "16/06/2026, 14:42:20"
+    },
+    {
+        "id": 1781653582775,
+        "nome": "Manoel",
+        "email": "manoel@gmail.com",
+        "telefone": "1199999999",
+        "senha": "$2b$10$jihEJAx3imMu/RJJkvNjYug18KS8ahCpju0UKtAkmEugLSqrQ7PMW",
+        "dataCadastro": "16/06/2026, 20:46:22"
     }
 ]

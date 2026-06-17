@@ -11,7 +11,7 @@ const listarBloqueios = async function (request, response) {
 }
 
 const criarBloqueio = async function (request, response) {
-    const { data, horario, diaInteiro, motivo } = request.body
+    const { data, horarioInicio, horarioFim, diaInteiro, motivo } = request.body
 
     if (!data) {
         return response.status(400).json({
@@ -20,17 +20,25 @@ const criarBloqueio = async function (request, response) {
         })
     }
 
-    if (!diaInteiro && !horario) {
+    if (!diaInteiro && (!horarioInicio || !horarioFim)) {
         return response.status(400).json({
             status: false,
-            message: 'Informe um horário ou marque como dia inteiro.'
+            message: 'Informe o horário inicial e o horário final do bloqueio.'
+        })
+    }
+
+    if (!diaInteiro && horarioInicio >= horarioFim) {
+        return response.status(400).json({
+            status: false,
+            message: 'O horário inicial deve ser menor que o horário final.'
         })
     }
 
     const novoBloqueio = {
         id: Date.now(),
         data,
-        horario: diaInteiro ? null : horario,
+        horarioInicio: diaInteiro ? null : horarioInicio,
+        horarioFim: diaInteiro ? null : horarioFim,
         diaInteiro: diaInteiro === true,
         motivo: motivo || 'Bloqueio criado pelo colaborador'
     }

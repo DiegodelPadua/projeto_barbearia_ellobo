@@ -149,10 +149,28 @@ const reagendarAgendamento = async function(request, response){
         message: 'Agendamento não encontrado.'
     })
 }
+const deletarAgendamento = async function(request, response){
+    const id = request.params.id
+
+    const resultado = await agendamentoDAO.deletarAgendamento(id)
+
+    if(resultado){
+        return response.status(200).json({
+            status: true,
+            message: 'Agendamento removido definitivamente.'
+        })
+    }
+
+    return response.status(404).json({
+        status: false,
+        message: 'Agendamento não encontrado.'
+    })
+}
 
 module.exports = {
     listarAgendamentos,
     criarAgendamento,
     cancelarAgendamento,
-    reagendarAgendamento 
+    reagendarAgendamento,
+    deletarAgendamento 
 }
