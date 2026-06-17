@@ -76,12 +76,14 @@ function abrirAgendamento() {
     formularioContainer.style.display = 'flex'
     areaMeusAgendamentos.style.display = 'block'
 
+    configurarDataMinima()
     carregarServicos()
     carregarMeusAgendamentos()
 
     formularioContainer.scrollIntoView({
         behavior: 'smooth'
     })
+
 }
 
 mostrarLogin.addEventListener('click', function () {
@@ -187,6 +189,14 @@ async function carregarServicos() {
 
 inputData.addEventListener('change', async function () {
     const dataSelecionada = inputData.value
+    const hoje = new Date().toLocaleDateString('sv-SE')
+
+    if(dataSelecionada < hoje){
+        alert('Não é possível agendar em datas anteriores ao dia atual.')
+        inputData.value = ''
+        selectHorario.innerHTML = '<option value="">Escolha uma data primeiro</option>'
+        return
+    }
 
     if (!dataSelecionada) {
         return
@@ -377,6 +387,14 @@ btnCancelarReagendamento.addEventListener('click', function(){
 
 inputNovaData.addEventListener('change', async function(){
     const dataSelecionada = inputNovaData.value
+    const hoje = new Date().toLocaleDateString('sv-SE')
+
+    if(dataSelecionada < hoje){
+        alert('Não é possível reagendar para uma data anterior ao dia atual.')
+        inputNovaData.value = ''
+        selectNovoHorario.innerHTML = '<option value="">Escolha uma nova data primeiro</option>'
+        return
+    }
 
     if(!dataSelecionada){
         return
@@ -461,4 +479,11 @@ formReagendar.addEventListener('submit', async function(event){
         alert('Erro ao confirmar reagendamento.')
         console.log(error)
     }
+
 })
+function configurarDataMinima(){
+    const hoje = new Date().toLocaleDateString('sv-SE')
+
+    inputData.min = hoje
+    inputNovaData.min = hoje
+}

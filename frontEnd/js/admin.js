@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', function(){
     const formBloqueio = document.getElementById('form-bloqueio')
     const listaBloqueios = document.getElementById('lista-bloqueios')
     const selectDiaInteiro = document.getElementById('bloqueio-dia-inteiro')
-    const inputHorarioBloqueio = document.getElementById('bloqueio-horario')
+    const inputHorarioBloqueioInicio = document.getElementById('bloqueio-horario-inicio')
+    const inputHorarioBloqueioFim = document.getElementById('bloqueio-horario-fim')
 
     const btnClientes = document.getElementById('btn-clientes')
     const secaoClientes = document.getElementById('secao-clientes')
@@ -397,10 +398,12 @@ document.addEventListener('DOMContentLoaded', function(){
     selectDiaInteiro.addEventListener('change', function(){
         const diaInteiro = selectDiaInteiro.value === 'true'
     
-        inputHorarioBloqueio.disabled = diaInteiro
-    
+        inputHorarioBloqueioInicio.disabled = diaInteiro
+        inputHorarioBloqueioFim.disabled = diaInteiro
+
         if (diaInteiro) {
-            inputHorarioBloqueio.value = ''
+            inputHorarioBloqueioInicio.value = ''
+            inputHorarioBloqueioFim.value = ''
         }
     })
     
@@ -411,7 +414,8 @@ document.addEventListener('DOMContentLoaded', function(){
     
         const novoBloqueio = {
             data: document.getElementById('bloqueio-data').value,
-            horario: diaInteiro ? null : inputHorarioBloqueio.value,
+            horarioInicio: diaInteiro ? null : inputHorarioBloqueioInicio.value,
+            horarioFim: diaInteiro ? null : inputHorarioBloqueioFim.value,
             diaInteiro,
             motivo: document.getElementById('bloqueio-motivo').value.trim()
         }
@@ -421,8 +425,13 @@ document.addEventListener('DOMContentLoaded', function(){
             return
         }
     
-        if (!diaInteiro && !novoBloqueio.horario) {
-            alert('Informe o horário ou selecione dia inteiro.')
+        if (!diaInteiro && (!novoBloqueio.horarioInicio || !novoBloqueio.horarioFim)) {
+            alert('Informe o horário inicial e o horário final do bloqueio.')
+            return
+        }
+
+        if (!diaInteiro && novoBloqueio.horarioInicio >= novoBloqueio.horarioFim) {
+            alert('O horário inicial deve ser menor que o horário final.')
             return
         }
     
@@ -440,8 +449,12 @@ document.addEventListener('DOMContentLoaded', function(){
     
             if (resposta.ok) {
                 alert('Bloqueio cadastrado com sucesso.')
+
                 formBloqueio.reset()
-                inputHorarioBloqueio.disabled = false
+
+                inputHorarioBloqueioInicio.disabled = false
+                inputHorarioBloqueioFim.disabled = false
+
                 carregarBloqueiosAdmin()
             } else {
                 alert(dados.message)
@@ -474,7 +487,13 @@ document.addEventListener('DOMContentLoaded', function(){
                     <div>
                         <strong>${bloqueio.diaInteiro ? 'Dia inteiro bloqueado' : 'Horário bloqueado'}</strong>
                         <span>Data: ${bloqueio.data}</span>
-                        <span>Horário: ${bloqueio.horario || 'Dia inteiro'}</span>
+                        <span>
+                        Horário: ${
+                            bloqueio.diaInteiro 
+                            ? 'Dia inteiro' 
+                            : `${bloqueio.horarioInicio} até ${bloqueio.horarioFim}`
+                        }
+                    </span>
                         <span>Motivo: ${bloqueio.motivo}</span>
                     </div>
     
@@ -639,89 +658,121 @@ document.addEventListener('DOMContentLoaded', function(){
         try {
             const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
             const dadosAgendamentos = await respostaAgendamentos.json()
-    
+
             const respostaClientes = await fetch(API_CLIENTES, {
-            headers: {
-                'Authorization': `Bearer ${tokenAdmin}`
-            }
-        })
+                headers: {
+                    'Authorization': `Bearer ${tokenAdmin}`
+                }
+            })
             const dadosClientes = await respostaClientes.json()
-    
-            const hoje = new Date().toLocaleDateString('sv-SE')
-    
+
+            const hoje = new Date()
+            const hojeFormatado = hoje.toLocaleDateString('sv-SE')
+
+            const inicioSemana = new Date(hoje)
+            inicioSemana.setDate(hoje.getDate() - hoje.getDay())
+
+            const anoAtual = hoje.getFullYear()
+            const mesAtual = hoje.getMonth()
+
             const agendamentosConfirmados = dadosAgendamentos.agendamentos.filter(function(agendamento){
                 return agendamento.statusAgendamento === 'confirmado'
             })
-    
+
             const agendamentosHoje = agendamentosConfirmados.filter(function(agendamento){
-                return agendamento.data === hoje
+                return agendamento.data === hojeFormatado
             })
-    
+
+            const agendamentosSemana = agendamentosConfirmados.filter(function(agendamento){
+                const dataAgendamento = new Date(agendamento.data + 'T00:00:00')
+                return dataAgendamento >= inicioSemana && dataAgendamento <= hoje
+            })
+
+            const agendamentosMes = agendamentosConfirmados.filter(function(agendamento){
+                const dataAgendamento = new Date(agendamento.data + 'T00:00:00')
+                return dataAgendamento.getFullYear() === anoAtual &&
+                    dataAgendamento.getMonth() === mesAtual
+            })
+
             totalAgendamentosHoje.textContent = agendamentosHoje.length
             totalClientes.textContent = dadosClientes.clientes.length
-    
-            const totalFaturamento = agendamentosHoje.reduce(function(total, agendamento){
-                return total + Number(agendamento.servico?.preco || 0)
-            }, 0)
-    
-            faturamentoHoje.textContent = totalFaturamento.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            })
-    
+            totalConfirmados.textContent = agendamentosConfirmados.length
+
+            const totalHoje = calcularFaturamento(agendamentosHoje)
+            const totalSemana = calcularFaturamento(agendamentosSemana)
+            const totalMes = calcularFaturamento(agendamentosMes)
+
+            faturamentoHoje.textContent = formatarMoeda(totalHoje)
+            faturamentoSemana.textContent = formatarMoeda(totalSemana)
+            faturamentoMes.textContent = formatarMoeda(totalMes)
+
+            servicoMaisVendido.textContent = encontrarMaisFrequente(
+                agendamentosConfirmados,
+                function(agendamento){
+                    return agendamento.servico?.nome
+                }
+            )
+
+            clienteMaisFrequente.textContent = encontrarMaisFrequente(
+                agendamentosConfirmados,
+                function(agendamento){
+                    return agendamento.cliente?.nome
+                }
+            )
+
             const agora = new Date()
-    
+
             const proximos = agendamentosHoje.filter(function(agendamento){
                 const dataHora = new Date(`${agendamento.data}T${agendamento.horario}:00`)
                 return dataHora >= agora
             })
-    
+
             proximos.sort(function(a, b){
                 return a.horario.localeCompare(b.horario)
             })
-    
+
             if(proximos.length > 0){
                 proximoAtendimento.textContent = `${proximos[0].horario} - ${proximos[0].cliente.nome}`
             }else{
                 proximoAtendimento.textContent = '-'
             }
-    
+
         } catch(error) {
             console.log(error)
-            alert('Erro ao carregar dashboard.')
+            alert('Erro ao carregar dashboard financeiro.')
         }
     }
 
     window.cancelarAgendamentoAdmin = async function(id){
-        const confirmar = confirm('Tem certeza que deseja remover este agendamento?')
-    
+        const confirmar = confirm('Tem certeza que deseja remover este agendamento definitivamente?')
+
         if(!confirmar){
             return
         }
-    
+
         try {
-           const resposta = await fetch(`${API_AGENDAMENTOS}/${id}/remover-admin`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${tokenAdmin}`
-            }
-        })
-    
+            const resposta = await fetch(`${API_AGENDAMENTOS}/${id}/remover-admin`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${tokenAdmin}`
+                }
+            })
+
             const dados = await resposta.json()
-    
+
             if(resposta.ok){
-                alert('Agendamento removido com sucesso.')
-    
+                alert('Agendamento removido definitivamente.')
+
                 if(inputDataAgendamentoAdmin.value){
                     carregarTabelaAgendamentos(inputDataAgendamentoAdmin.value)
                 }
-    
+
                 carregarDashboard()
-    
+
             }else{
                 alert(dados.message)
             }
-    
+
         } catch(error){
             alert('Erro ao remover agendamento.')
             console.log(error)
@@ -827,7 +878,11 @@ document.addEventListener('DOMContentLoaded', function(){
         const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
         const dadosAgendamentos = await respostaAgendamentos.json()
 
-        const respostaClientes = await fetch(API_CLIENTES)
+        const respostaClientes = await fetch(API_CLIENTES, {
+            headers: {
+                'Authorization': `Bearer ${tokenAdmin}`
+            }
+        })
         const dadosClientes = await respostaClientes.json()
 
         const hoje = new Date()
