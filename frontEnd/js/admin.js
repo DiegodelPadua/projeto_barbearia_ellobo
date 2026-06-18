@@ -45,6 +45,10 @@ document.addEventListener('DOMContentLoaded', function(){
     const faturamentoHoje = document.getElementById('faturamento-hoje')
     const proximoAtendimento = document.getElementById('proximo-atendimento')
 
+    const btnAgendaMes = document.getElementById('btn-agenda-mes')
+    const secaoAgendaMes = document.getElementById('secao-agenda-mes')
+    const calendarioAdmin = document.getElementById('calendario-admin')
+
     const API_COLABORADORES = 'http://localhost:8080/colaboradores'
     const API_SERVICOS = 'http://localhost:8080/servicos'
     const API_HORARIOS = 'http://localhost:8080/horarios'
@@ -562,6 +566,14 @@ document.addEventListener('DOMContentLoaded', function(){
     
         await carregarTabelaAgendamentos(data)
     })
+
+    btnAgendaMes.addEventListener('click', function(){
+
+        secaoAgendaMes.classList.toggle('escondido')
+
+        carregarAgendaMes()
+
+    })
     
     async function carregarTabelaAgendamentos(data){
         try {
@@ -997,4 +1009,64 @@ function encontrarMaisFrequente(listaAgendamentos, pegarValor){
 
     return maisFrequente
     }
+
+    async function carregarAgendaMes(){
+        try{
+            const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+            const dadosAgendamentos = await respostaAgendamentos.json()
+
+            calendarioAdmin.innerHTML = ''
+
+            const hoje = new Date()
+            const ano = hoje.getFullYear()
+            const mes = hoje.getMonth()
+
+            const quantidadeDias = new Date(ano, mes + 1, 0).getDate()
+
+            const agendamentosConfirmados = dadosAgendamentos.agendamentos.filter(function(agendamento){
+                return agendamento.statusAgendamento === 'confirmado'
+            })
+
+            for(let dia = 1; dia <= quantidadeDias; dia++){
+
+                const dataFormatada = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`
+
+                const agendamentosDoDia = agendamentosConfirmados.filter(function(agendamento){
+                    return agendamento.data === dataFormatada
+                })
+
+                const cardDia = document.createElement('div')
+                cardDia.classList.add('dia-calendario')
+
+                if(agendamentosDoDia.length > 0){
+                    cardDia.classList.add('dia-com-agendamento')
+                }
+
+                if(dataFormatada === hoje.toLocaleDateString('sv-SE')){
+                    cardDia.classList.add('dia-hoje')
+                }
+
+                cardDia.innerHTML = `
+                    <strong>${dia}</strong>
+
+                    <span>
+                        ${dataFormatada}
+                    </span>
+
+                    ${
+                        agendamentosDoDia.length > 0
+                        ? `<div class="badge-agendamento">${agendamentosDoDia.length} agendamento(s)</div>`
+                        : `<span>Livre</span>`
+                    }
+                `
+
+                calendarioAdmin.appendChild(cardDia)
+            }
+
+        }catch(error){
+            alert('Erro ao carregar agenda do mês.')
+            console.log(error)
+        }
+    }
+
 })

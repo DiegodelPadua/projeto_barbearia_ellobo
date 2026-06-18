@@ -76,6 +76,7 @@ function abrirAgendamento() {
     formularioContainer.style.display = 'flex'
     areaMeusAgendamentos.style.display = 'block'
 
+    carregarDatasDisponiveis()
     configurarDataMinima()
     carregarServicos()
     carregarMeusAgendamentos()
@@ -185,6 +186,49 @@ async function carregarServicos() {
 
         selectServico.appendChild(option)
     })
+}
+async function carregarDatasDisponiveis(){
+    const resposta = await fetch(API_HORARIOS)
+    const dados = await resposta.json()
+
+    const diasPermitidos = dados.horarios
+        .filter(function(horario){
+            return horario.trabalha === true
+        })
+        .map(function(horario){
+            return horario.diaSemana
+        })
+
+    inputData.innerHTML = '<option value="">Selecione uma data disponível</option>'
+
+    const hoje = new Date()
+
+    for(let i = 0; i < 60; i++){
+        const data = new Date(hoje)
+        data.setDate(hoje.getDate() + i)
+
+        const diasSemana = [
+            'domingo',
+            'segunda',
+            'terça',
+            'quarta',
+            'quinta',
+            'sexta',
+            'sábado'
+        ]
+
+        const nomeDia = diasSemana[data.getDay()]
+
+        if(diasPermitidos.includes(nomeDia)){
+            const dataFormatada = data.toLocaleDateString('sv-SE')
+
+            const option = document.createElement('option')
+            option.value = dataFormatada
+            option.textContent = data.toLocaleDateString('pt-BR')
+
+            inputData.appendChild(option)
+        }
+    }
 }
 
 inputData.addEventListener('change', async function () {
