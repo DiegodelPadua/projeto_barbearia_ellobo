@@ -4,7 +4,10 @@ const servicoDAO = require('../model/servicoDAO')
 const bloqueioDAO = require('../model/bloqueioDAO')
 
 const listarAgendamentos = async function (request, response) {
-    const agendamentos = await agendamentoDAO.selectAgendamentos()
+    // O servidor filtra os registros; o navegador não recebe dados de outros clientes.
+    const todos = await agendamentoDAO.selectAgendamentos()
+    const agendamentos = request.usuario.tipo === 'admin' ? todos
+        : todos.filter(item => String(item.cliente.id) === String(request.usuario.id))
 
     return response.status(200).json({
         status: true,
@@ -14,7 +17,8 @@ const listarAgendamentos = async function (request, response) {
 }
 
 const criarAgendamento = async function(request, response){
-    const { idCliente, idServico, data, horario } = request.body
+    const { idServico, data, horario } = request.body
+    const idCliente = request.usuario.tipo === 'admin' ? request.body.idCliente : request.usuario.id
 
     if(!idCliente || !idServico || !data || !horario){
         return response.status(400).json({
@@ -83,6 +87,8 @@ const criarAgendamento = async function(request, response){
 
     const resultado = await agendamentoDAO.insertAgendamento(novoAgendamento)
 
+    if (resultado === 'conflito') return response.status(409).json({message: 'Este horário já possui agendamento.'})
+
     if(resultado){
         return response.status(201).json({
             status: true,
@@ -99,8 +105,15 @@ const criarAgendamento = async function(request, response){
 
 const cancelarAgendamento = async function(request, response){
     const id = request.params.id
+    const registros = await agendamentoDAO.selectAgendamentos()
+    const registro = registros.find(item => String(item.id) === String(id))
+    if (!registro || (request.usuario.tipo !== 'admin' && String(registro.cliente.id) !== String(request.usuario.id))) {
+        return response.status(404).json({message: 'Agendamento não encontrado.'})
+    }
 
     const resultado = await agendamentoDAO.cancelarAgendamento(id)
+
+    if (resultado === 'conflito') return response.status(409).json({message: 'Este horário já possui agendamento.'})
 
     if(resultado){
         return response.status(200).json({
@@ -117,6 +130,11 @@ const cancelarAgendamento = async function(request, response){
 
 const reagendarAgendamento = async function(request, response){
     const id = request.params.id
+    const registros = await agendamentoDAO.selectAgendamentos()
+    const registro = registros.find(item => String(item.id) === String(id))
+    if (!registro || (request.usuario.tipo !== 'admin' && String(registro.cliente.id) !== String(request.usuario.id))) {
+        return response.status(404).json({message: 'Agendamento não encontrado.'})
+    }
     const { data, horario } = request.body
 
     if(!data || !horario){
@@ -137,6 +155,8 @@ const reagendarAgendamento = async function(request, response){
 
     const resultado = await agendamentoDAO.reagendarAgendamento(id, data, horario)
 
+    if (resultado === 'conflito') return response.status(409).json({message: 'Este horário já possui agendamento.'})
+
     if(resultado){
         return response.status(200).json({
             status: true,
@@ -153,6 +173,8 @@ const deletarAgendamento = async function(request, response){
     const id = request.params.id
 
     const resultado = await agendamentoDAO.deletarAgendamento(id)
+
+    if (resultado === 'conflito') return response.status(409).json({message: 'Este horário já possui agendamento.'})
 
     if(resultado){
         return response.status(200).json({

@@ -2,7 +2,13 @@ const colaboradorDAO = require('../model/colaboradorDAO')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
-const JWT_SECRET = 'chave_secreta_el_lobo'
+const JWT_SECRET = require('../config/jwt')
+// Em produção, credenciais vêm do painel da hospedagem, nunca do GitHub.
+const adminEmail = process.env.ADMIN_EMAIL
+const adminHash = process.env.ADMIN_PASSWORD ? bcrypt.hashSync(process.env.ADMIN_PASSWORD, 12) : null
+if (process.env.NODE_ENV === 'production' && (!adminEmail || !adminHash || process.env.ADMIN_PASSWORD.length < 16)) {
+    throw new Error('Configure ADMIN_EMAIL e ADMIN_PASSWORD (mínimo 16 caracteres).')
+}
 
 
 const listarColaboradores = async function (request, response) {
@@ -11,7 +17,7 @@ const listarColaboradores = async function (request, response) {
     return response.status(200).json({
         status: true,
         quantidade: colaboradores.length,
-        colaboradores
+        colaboradores: colaboradores.map(({ senha, ...colaborador }) => colaborador)
     })
 }
 
@@ -25,9 +31,14 @@ const loginColaborador = async function (request, response) {
         })
     }
 
-    const colaborador = await colaboradorDAO.buscarColaboradorPorEmail(email)
+    const colaborador = adminEmail && adminHash
+        ? (email === adminEmail ? {id: 1, nome: 'Administrador', email: adminEmail, cargo: 'Administrador', senha: adminHash} : null)
+        : await colaboradorDAO.buscarColaboradorPorEmail(email)
+    const senhaCorreta = colaborador && (adminHash || colaborador.senha.startsWith('$2')
+        ? await bcrypt.compare(senha, colaborador.senha)
+        : process.env.NODE_ENV !== 'production' && colaborador.senha === senha)
 
-    if (!colaborador || colaborador.senha !== senha) {
+    if (!senhaCorreta) {
         return response.status(401).json({
             status: false,
             message: 'Email ou senha inválidos.'

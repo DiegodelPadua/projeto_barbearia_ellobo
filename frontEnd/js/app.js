@@ -30,10 +30,10 @@ const selectNovoHorario = document.getElementById('novo-horario')
 const btnCancelarReagendamento = document.getElementById('btn-cancelar-reagendamento')
 
 
-const API_CLIENTES = 'http://localhost:8080/clientes'
-const API_SERVICOS = 'http://localhost:8080/servicos'
-const API_HORARIOS = 'http://localhost:8080/horarios'
-const API_AGENDAMENTOS = 'http://localhost:8080/agendamentos'
+const API_CLIENTES = '/clientes'
+const API_SERVICOS = '/servicos'
+const API_HORARIOS = '/horarios'
+const API_AGENDAMENTOS = '/agendamentos'
 
 let clienteLogado = JSON.parse(localStorage.getItem('clienteLogado'))
 let tokenCliente = localStorage.getItem('tokenCliente')
@@ -41,7 +41,7 @@ let tokenCliente = localStorage.getItem('tokenCliente')
 verificarClienteLogado()
 
 botaoAgendar.addEventListener('click', function () {
-    if (clienteLogado) {
+    if (clienteLogado && tokenCliente) {
         abrirAgendamento()
     } else {
         abrirLogin()
@@ -49,7 +49,7 @@ botaoAgendar.addEventListener('click', function () {
 })
 
 function verificarClienteLogado() {
-    if (clienteLogado) {
+    if (clienteLogado && tokenCliente) {
         nomeUsuario.textContent = `Olá, ${clienteLogado.nome}`
         areaUsuarioLogado.classList.remove('escondido')
         linkAdmin.classList.add('escondido')
@@ -129,6 +129,8 @@ formCadastro.addEventListener('submit', async function (event) {
     const dados = await resposta.json()
 
     if (resposta.ok) {
+        tokenCliente = dados.token
+        localStorage.setItem('tokenCliente', tokenCliente)
         clienteLogado = dados.cliente
 
         localStorage.setItem('clienteLogado', JSON.stringify(clienteLogado))
@@ -161,6 +163,8 @@ formLogin.addEventListener('submit', async function (event) {
     const dados = await resposta.json()
 
     if (resposta.ok) {
+        tokenCliente = dados.token
+        localStorage.setItem('tokenCliente', tokenCliente)
         clienteLogado = dados.cliente
 
         localStorage.setItem('clienteLogado', JSON.stringify(clienteLogado))
@@ -286,7 +290,8 @@ formAgendamento.addEventListener('submit', async function (event) {
     const resposta = await fetch(API_AGENDAMENTOS, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${tokenCliente}`
         },
         body: JSON.stringify(agendamento)
     })
@@ -308,7 +313,7 @@ formAgendamento.addEventListener('submit', async function (event) {
 
 async function carregarMeusAgendamentos(){
     try {
-        const resposta = await fetch(API_AGENDAMENTOS)
+        const resposta = await fetch(API_AGENDAMENTOS, {headers: {Authorization: `Bearer ${tokenCliente}`}})
         const dados = await resposta.json()
 
         listaMeusAgendamentos.innerHTML = ''
@@ -391,7 +396,8 @@ window.cancelarMeuAgendamento = async function(id){
 
     try {
         const resposta = await fetch(`${API_AGENDAMENTOS}/${id}/cancelar`, {
-            method: 'PUT'
+            method: 'PUT',
+            headers: {Authorization: `Bearer ${tokenCliente}`}
         })
 
         const dados = await resposta.json()
@@ -490,7 +496,8 @@ formReagendar.addEventListener('submit', async function(event){
         const resposta = await fetch(`${API_AGENDAMENTOS}/${idAgendamento}/reagendar`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${tokenCliente}`
             },
             body: JSON.stringify(dadosReagendamento)
         })

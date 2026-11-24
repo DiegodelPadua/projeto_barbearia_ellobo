@@ -4,13 +4,13 @@ const router = express.Router()
 const autenticacao = require('../middlewares/autenticacao')
 const agendamentoController = require('../controller/agendamentoController')
 
-router.get('/', agendamentoController.listarAgendamentos)
+router.get('/', autenticacao.validarToken, agendamentoController.listarAgendamentos)
 
-router.post('/', agendamentoController.criarAgendamento)
+router.post('/', autenticacao.validarToken, agendamentoController.criarAgendamento)
 
-router.put('/:id/cancelar', agendamentoController.cancelarAgendamento)
+router.put('/:id/cancelar', autenticacao.validarToken, agendamentoController.cancelarAgendamento)
 
-router.put('/:id/reagendar', agendamentoController.reagendarAgendamento)
+router.put('/:id/reagendar', autenticacao.validarToken, agendamentoController.reagendarAgendamento)
 
 router.put(
     '/:id/remover-admin',
