@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const caminhoArquivo = path.join(__dirname, '../database/agendamentos.json')
+const caminhoArquivo = path.join(process.env.DATA_DIR || path.join(__dirname, '../database'), 'agendamentos.json')
 
 const selectAgendamentos = async function () {
     const dados = fs.readFileSync(caminhoArquivo, 'utf-8')
@@ -10,8 +10,10 @@ const selectAgendamentos = async function () {
 
 const insertAgendamento = async function (agendamento) {
     try {
-        const agendamentos = await selectAgendamentos()
+        const agendamentos = JSON.parse(fs.readFileSync(caminhoArquivo, 'utf-8'))
 
+        // Verificar e gravar sem await evita duas reservas simultâneas no mesmo processo.
+        if (agendamentos.some(item => item.data === agendamento.data && item.horario === agendamento.horario && item.statusAgendamento === 'confirmado')) return 'conflito'
         agendamentos.push(agendamento)
 
         fs.writeFileSync(caminhoArquivo, JSON.stringify(agendamentos, null, 4))
@@ -25,7 +27,7 @@ const insertAgendamento = async function (agendamento) {
 }
 
 const buscarAgendamentoPorDataHorario = async function(data, horario){
-    const agendamentos = await selectAgendamentos()
+    const agendamentos = JSON.parse(fs.readFileSync(caminhoArquivo, 'utf-8'))
 
     return agendamentos.find(function(agendamento){
         return agendamento.data === data &&
@@ -36,7 +38,7 @@ const buscarAgendamentoPorDataHorario = async function(data, horario){
 
 const cancelarAgendamento = async function(id){
     try {
-        const agendamentos = await selectAgendamentos()
+        const agendamentos = JSON.parse(fs.readFileSync(caminhoArquivo, 'utf-8'))
 
         const index = agendamentos.findIndex(function(agendamento){
             return agendamento.id == id
@@ -60,7 +62,7 @@ const cancelarAgendamento = async function(id){
 
 const reagendarAgendamento = async function(id, novaData, novoHorario){
     try {
-        const agendamentos = await selectAgendamentos()
+        const agendamentos = JSON.parse(fs.readFileSync(caminhoArquivo, 'utf-8'))
 
         const index = agendamentos.findIndex(function(agendamento){
             return agendamento.id == id
@@ -70,6 +72,7 @@ const reagendarAgendamento = async function(id, novaData, novoHorario){
             return false
         }
 
+        if (agendamentos.some(item => item.id != id && item.data === novaData && item.horario === novoHorario && item.statusAgendamento === 'confirmado')) return 'conflito'
         agendamentos[index].data = novaData
         agendamentos[index].horario = novoHorario
         agendamentos[index].statusAgendamento = 'confirmado'
@@ -86,7 +89,7 @@ const reagendarAgendamento = async function(id, novaData, novoHorario){
 
 const deletarAgendamento = async function(id){
     try {
-        const agendamentos = await selectAgendamentos()
+        const agendamentos = JSON.parse(fs.readFileSync(caminhoArquivo, 'utf-8'))
 
         const novosAgendamentos = agendamentos.filter(function(agendamento){
             return agendamento.id != id

@@ -49,12 +49,12 @@ document.addEventListener('DOMContentLoaded', function(){
     const secaoAgendaMes = document.getElementById('secao-agenda-mes')
     const calendarioAdmin = document.getElementById('calendario-admin')
 
-    const API_COLABORADORES = 'http://localhost:8080/colaboradores'
-    const API_SERVICOS = 'http://localhost:8080/servicos'
-    const API_HORARIOS = 'http://localhost:8080/horarios'
-    const API_BLOQUEIOS = 'http://localhost:8080/bloqueios'
-    const API_AGENDAMENTOS = 'http://localhost:8080/agendamentos'
-    const API_CLIENTES = 'http://localhost:8080/clientes'
+    const API_COLABORADORES = '/colaboradores'
+    const API_SERVICOS = '/servicos'
+    const API_HORARIOS = '/horarios'
+    const API_BLOQUEIOS = '/bloqueios'
+    const API_AGENDAMENTOS = '/agendamentos'
+    const API_CLIENTES = '/clientes'
 
 
     let colaboradorLogado = JSON.parse(localStorage.getItem('colaboradorLogado'))
@@ -580,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function(){
             const respostaHorarios = await fetch(`${API_HORARIOS}/disponiveis?data=${data}`)
             const dadosHorarios = await respostaHorarios.json()
     
-            const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+            const respostaAgendamentos = await fetch(API_AGENDAMENTOS, {headers: {Authorization: `Bearer ${tokenAdmin}`}})
             const dadosAgendamentos = await respostaAgendamentos.json()
     
             const agendamentosDoDia = dadosAgendamentos.agendamentos.filter(function(agendamento){
@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     async function carregarDashboard(){
         try {
-            const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+            const respostaAgendamentos = await fetch(API_AGENDAMENTOS, {headers: {Authorization: `Bearer ${tokenAdmin}`}})
             const dadosAgendamentos = await respostaAgendamentos.json()
 
             const respostaClientes = await fetch(API_CLIENTES, {
@@ -802,7 +802,7 @@ document.addEventListener('DOMContentLoaded', function(){
     })
         const dadosClientes = await respostaClientes.json()
 
-        const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+        const respostaAgendamentos = await fetch(API_AGENDAMENTOS, {headers: {Authorization: `Bearer ${tokenAdmin}`}})
         const dadosAgendamentos = await respostaAgendamentos.json()
 
         listaClientes.innerHTML = ''
@@ -887,7 +887,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     async function carregarDashboard(){
     try {
-        const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+        const respostaAgendamentos = await fetch(API_AGENDAMENTOS, {headers: {Authorization: `Bearer ${tokenAdmin}`}})
         const dadosAgendamentos = await respostaAgendamentos.json()
 
         const respostaClientes = await fetch(API_CLIENTES, {
@@ -1012,7 +1012,7 @@ function encontrarMaisFrequente(listaAgendamentos, pegarValor){
 
     async function carregarAgendaMes(){
         try{
-            const respostaAgendamentos = await fetch(API_AGENDAMENTOS)
+            const respostaAgendamentos = await fetch(API_AGENDAMENTOS, {headers: {Authorization: `Bearer ${tokenAdmin}`}})
             const dadosAgendamentos = await respostaAgendamentos.json()
 
             calendarioAdmin.innerHTML = ''

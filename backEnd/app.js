@@ -1,3 +1,10 @@
+require('dotenv').config()
+const path = require('path')
+require('./config/jwt')
+// Não iniciar produção com os JSON dentro da pasta substituída no deploy.
+if (process.env.NODE_ENV === 'production' && (!process.env.DATA_DIR || !path.isAbsolute(process.env.DATA_DIR))) {
+    throw new Error('Configure DATA_DIR absoluto em armazenamento persistente antes de publicar.')
+}
 const express = require('express')
 const cors = require('cors')
 
@@ -20,6 +27,10 @@ app.use('/bloqueios', bloqueioRoutes)
 app.use('/clientes', clienteRoutes)
 app.use('/agendamentos', agendamentoRoutes)
 
-app.listen(8080, function () {
-    console.log('API da Barbearia EL LOBO rodando na porta 8080')
+// Serve somente o front-end, sem expor código ou arquivos de dados.
+app.use(express.static(path.join(__dirname, '../frontEnd')))
+
+const porta = process.env.PORT || 8080
+app.listen(porta, '0.0.0.0', function () {
+    console.log(`EL LOBO iniciado na porta ${porta}`)
 })

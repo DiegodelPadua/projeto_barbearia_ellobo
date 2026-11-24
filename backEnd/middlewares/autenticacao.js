@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const JWT_SECRET = 'chave_secreta_el_lobo'
+const JWT_SECRET = require('../config/jwt')
 
 const validarTokenAdmin = function(request, response, next){
 
@@ -41,6 +41,15 @@ const validarTokenAdmin = function(request, response, next){
 
 }
 
-module.exports = {
-    validarTokenAdmin
+// Clientes e administradores precisam apresentar um JWT válido.
+const validarToken = function(request, response, next) {
+    const header = request.headers.authorization || ''
+    if (!header.startsWith('Bearer ')) return response.status(401).json({message: 'Faça login novamente.'})
+    try {
+        request.usuario = jwt.verify(header.slice(7), JWT_SECRET)
+        next()
+    } catch (error) {
+        return response.status(401).json({message: 'Token inválido ou expirado.'})
+    }
 }
+module.exports = { validarTokenAdmin, validarToken }

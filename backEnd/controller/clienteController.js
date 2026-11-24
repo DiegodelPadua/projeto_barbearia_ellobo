@@ -2,12 +2,10 @@ const clienteDAO = require('../model/clienteDAO')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const JWT_SECRET = 'chave_secreta_el_lobo'
+const JWT_SECRET = require('../config/jwt')
 
 const criarConta = async function (request, response) {
 
-    console.log('Entrou na função criarConta')
-    console.log(request.body)
 
     const { nome, email, telefone, senha } = request.body
 
@@ -44,6 +42,7 @@ const criarConta = async function (request, response) {
         return response.status(201).json({
             status: true,
             message: 'Conta criada com sucesso.',
+            token: jwt.sign({id: novoCliente.id, nome: novoCliente.nome, email: novoCliente.email}, JWT_SECRET, {expiresIn: '2h'}),
             cliente: {
                 id: novoCliente.id,
                 nome: novoCliente.nome,
@@ -118,7 +117,7 @@ const listarClientes = async function (request, response) {
     return response.status(200).json({
         status: true,
         quantidade: clientes.length,
-        clientes
+        clientes: clientes.map(({ senha, ...cliente }) => cliente)
     })
 }
 

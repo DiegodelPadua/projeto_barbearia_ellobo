@@ -3,7 +3,7 @@ const router = express.Router()
 
 const colaboradorController = require('../controller/colaboradorController')
 
-router.get('/', colaboradorController.listarColaboradores)
+router.get('/', require('../middlewares/autenticacao').validarTokenAdmin, colaboradorController.listarColaboradores)
 router.post('/login', colaboradorController.loginColaborador)
 
 module.exports = router

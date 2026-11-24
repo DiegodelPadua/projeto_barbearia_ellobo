@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const caminhoArquivo = path.join(__dirname, '../database/servicos.json')
+const caminhoArquivo = path.join(process.env.DATA_DIR || path.join(__dirname, '../database'), 'servicos.json')
 
 const selectServicos = async function () {
     const dados = fs.readFileSync(caminhoArquivo, 'utf-8')
